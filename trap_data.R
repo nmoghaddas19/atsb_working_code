@@ -2,7 +2,8 @@
 ## This is a test script to examine the trap data for the mali 2016-17 trial
 ## and find out how to clean it
 ################################################################################
-
+library(dplyr)
+setwd("~/GitHub/atsb_working_code/")
 cdc_2016_inside <- read.csv("Data Synopsis  catches 2016/CDC 2016 inside-Table 1.csv")
 cdc_2016_periphery <- read.csv("Data Synopsis  catches 2016/CDC 2016 periphery-Table 1.csv")
 malaise_2016_inside <- read.csv("Data Synopsis  catches 2016/Malaise 2016 inside-Table 1.csv")
@@ -29,6 +30,7 @@ psc_2017 |>
 table(cdc_2016_inside$Month)
 table(cdc_2016_periphery$Month)
 table(malaise_2016_inside$Month)
+table(cdc_2017$Month)
 
 # visualise
 plot(cdc_2016_inside$Month, cdc_2016_inside$tot.f, pch=20, frame.plot = F)
