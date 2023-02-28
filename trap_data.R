@@ -4,8 +4,8 @@
 ################################################################################
 library(dplyr)
 setwd("~/GitHub/atsb_working_code/")
-cdc_2016_inside <- read.csv("Data Synopsis  catches 2016/CDC 2016 inside-Table 1.csv")
-cdc_2016_periphery <- read.csv("Data Synopsis  catches 2016/CDC 2016 periphery-Table 1.csv")
+cdc_2016_inside <- read.csv("atsb_working_code/Data Synopsis  catches 2016/CDC 2016 inside-Table 1.csv")
+cdc_2016_periphery <- read.csv("atsb_working_code/Data Synopsis  catches 2016/CDC 2016 periphery-Table 1.csv")
 malaise_2016_inside <- read.csv("Data Synopsis  catches 2016/Malaise 2016 inside-Table 1.csv")
 malaise_2016_periphery <- read.csv("Data Synopsis  catches 2016/Malaise 2016 periphery-Table 1.csv")
 psc_2016 <- read.csv("Data Synopsis  catches 2016/PSC 2016-Table 1.csv")
@@ -21,7 +21,7 @@ malaise_2016_periphery[1:170,-c(19:21)][-c(171:184),] |>
 psc_2016[,-c(19:21)] |>
   filter(!is.na(year)) -> psc_2016
 
-cdc_2017 <- read.csv("DB CDC Malaise PSC catches 2017/CDC-Table 1.csv")
+cdc_2017 <- read.csv("atsb_working_code/DB CDC Malaise PSC catches 2017/CDC-Table 1.csv")
 malaise_2017 <- read.csv("DB CDC Malaise PSC catches 2017/Malaise-Table 1.csv")
 psc_2017 <- read.csv("DB CDC Malaise PSC catches 2017/PSC-Table 1.csv")
 psc_2017 |>
