@@ -13,11 +13,11 @@ library(malariasimulation)
 
 mali <- MLI
 kayes_rural <- single_site(mali, 5)
-# feed <- c(0.10, 0.15, 0.20)
-props <- c(1, 0.75, 0.5)
+feed <- c(0.10, 0.15, 0.20)
+# props <- c(1, 0.75, 0.5)
 out_nc <- list()
-for (i in 1:length(props)) {
-  name <- as.character(props[i])
+for (i in 1:length(feed)) {
+  name <- as.character(feed[i])
   kayes_rural_params <- site_parameters(
     interventions = kayes_rural$interventions,
     demography = kayes_rural$demography,
@@ -25,12 +25,12 @@ for (i in 1:length(props)) {
     seasonality = kayes_rural$seasonality,
     eir = kayes_rural$eir$eir[1],
     overrides = list(human_population = 10000,
-                     mu_atsb = c(0.2,0.00))
+                     mu_atsb = c(feed[i],0.2-feed[i]))
   )
   arab_params_1 <- gamb_params
   arab_params_1$species <- "arab"
   kayes_rural_params <- set_species(kayes_rural_params, species=list(gamb_params,arab_params_1),
-                                    proportions=c(props[i],1-props[i]))
+                                    proportions=c(0.5,0.5))
   kayes_rural_params <- set_atsb(parameters = kayes_rural_params,
                                  timesteps = (17*365+6*30):(18*365), 
                                  coverages = rep(1,366-6*30))
@@ -67,17 +67,35 @@ lines(out_nc[[3]]$timestep/365+2000,
 legend(x="topright", legend=c("0% non compliance", "25% non compliance", "50% non compliance"), col=c(1,2,4), 
        lty = 1, lwd=2, bty = "n")
 
-plot(out_nc[[1]]$timestep/365+2000, 
-     out_nc[[1]]$n_detect_730_3649 / out_nc[[1]]$n_730_3649, ylim = c(0,1),
+plot(out_nc[[4]]$timestep/365+2000, 
+     out_nc[[4]]$n_detect_730_3649 / out_nc[[4]]$n_730_3649, ylim = c(0,1),
      type="l", lwd=2, frame.plot = F, xlim=c(2016,2020), xlab="Year", ylab="PfPr2-10")
+lines(out_nc[[1]]$timestep/365+2000, 
+      out_nc[[1]]$n_detect_730_3649 / out_nc[[1]]$n_730_3649,
+      lwd=2, col=7)
 lines(out_nc[[2]]$timestep/365+2000, 
       out_nc[[2]]$n_detect_730_3649 / out_nc[[2]]$n_730_3649,
       lwd=2, col=2)
 lines(out_nc[[3]]$timestep/365+2000, 
       out_nc[[3]]$n_detect_730_3649 / out_nc[[3]]$n_730_3649,
       lwd=2, col=4)
-legend(x="topright", legend=c("10% and 10%", "5% and 15%", "0% and 20%"), col=c(1,2,4), 
+legend(x="topright", legend=c("10% and 10%", "5% and 15%", "0% and 20%", "No ATSB"), col=c(1,2,4,7), 
        lty = 1, lwd=2, bty = "n")
+
+kayes_rural_params <- site_parameters(
+  interventions = kayes_rural$interventions,
+  demography = kayes_rural$demography,
+  vectors = kayes_rural$vectors,
+  seasonality = kayes_rural$seasonality,
+  eir = kayes_rural$eir$eir[1],
+  overrides = list(human_population = 10000)
+)
+arab_params_1 <- gamb_params
+arab_params_1$species <- "arab"
+kayes_rural_params <- set_species(kayes_rural_params, species=list(gamb_params,arab_params_1),
+                                  proportions=c(0.5,0.5))
+out_nc[["0"]] <- run_simulation(timesteps = kayes_rural_params$timesteps,
+                                 parameters = kayes_rural_params)
 
 ################################################################################
 ############################### Scenario 2: 35%  ###############################
@@ -148,6 +166,8 @@ for (i in 2:length(out_nc_35)) {
         lwd=2, col=i)
 }
 legend(x="topright", legend=c("35% and 35%", "30% and 40%", "25% and 45%", "20% and 50%",
-                              "15% and 55%", "10% and 60%","5% and 65%", "0% and 70%"), 
-       col= 1:8, lty = 1, lwd=2, bty = "n")
-
+                              "15% and 55%", "10% and 60%","5% and 65%", "0% and 70%", "No ATSB"), 
+       col= c(1:8,"darkgreen"), lty = 1, lwd=2, bty = "n")
+lines(out_nc[[4]]$timestep/365+2000, 
+      out_nc[[4]]$n_detect_730_3649 / out_nc[[4]]$n_730_3649,
+      lwd=2, col="darkgreen")

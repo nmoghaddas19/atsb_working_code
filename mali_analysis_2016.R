@@ -18,7 +18,7 @@ hlc_aug_sep <- read.csv("HLC data 2016 (unchanged) processed/HLC Aug_Sept 2016-T
 hlc_oct_dec <- read.csv("HLC data 2016 (unchanged) processed/HLC Oct_Dber-Table 1.csv")
 hlc_aug_sep <- hlc_aug_sep[,-17]
 # the data for 2017 has no date so havent included it yet
-#hlc_apr_jul_2017 <- read.csv("HLC data processed/April_May_June_July-Table 1.csv")[,1:16]
+# hlc_apr_jul_2017 <- read.csv("HLC data processed/April_May_June_July-Table 1.csv")[,1:16]
 # hlc_aug_sep_2017 <- read.csv("HLC data processed/August_September-Table 1.csv")[,1:16]
 # hlc_oct_dec_2017 <- read.csv("HLC data processed/Oct_Nvber_Dcber-Table 1.csv")[,1:16]
 

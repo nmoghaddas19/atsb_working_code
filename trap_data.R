@@ -22,10 +22,15 @@ psc_2016[,-c(19:21)] |>
   filter(!is.na(year)) -> psc_2016
 
 cdc_2017 <- read.csv("atsb_working_code/DB CDC Malaise PSC catches 2017/CDC-Table 1.csv")
-malaise_2017 <- read.csv("DB CDC Malaise PSC catches 2017/Malaise-Table 1.csv")
-psc_2017 <- read.csv("DB CDC Malaise PSC catches 2017/PSC-Table 1.csv")
+malaise_2017 <- read.csv("atsb_working_code/DB CDC Malaise PSC catches 2017/Malaise-Table 1.csv")
+psc_2017 <- read.csv("atsb_working_code/DB CDC Malaise PSC catches 2017/PSC-Table 1.csv")
 psc_2017 |>
   filter(!is.na(Month)) -> psc_2017
+hlc_apr_jul_2017 <- read.csv("atsb_working_code/HLC data processed/April_May_June_July-Table 1.csv")[,1:16]
+hlc_aug_sep_2017 <- read.csv("atsb_working_code/HLC data processed/August_September-Table 1.csv")[,1:16]
+hlc_oct_dec_2017 <- read.csv("atsb_working_code/HLC data processed/Oct_Nvber_Dcber-Table 1.csv")[,1:16]
+hlc <- rbind(hlc_apr_jul_2017, hlc_aug_sep_2017, hlc_oct_dec_2017)
+rm(hlc_apr_jul_2017, hlc_aug_sep_2017, hlc_oct_dec_2017)
 # check data is okay 
 table(cdc_2016_inside$Month)
 table(cdc_2016_periphery$Month)
@@ -39,6 +44,66 @@ points(malaise_2016_inside$Month, malaise_2016_inside$tot.f, pch = 20, col=3)
 points(malaise_2016_periphery$Month, malaise_2016_periphery$tot.f, pch=20, col=4)
 points(psc_2016$Month, psc_2016$tot.f, pch=20, col=5)
 
+# malaise 2017
+plot(malaise_2017$Month, malaise_2017$tot.f, pch=20, frame.plot = F, col=as.factor(cdc_2017$Experimental.or.control),
+     ylim=c(0,1000))
+malaise_2017 |>
+  group_by(Month, Experimental.or.control) |>
+  summarise(Mean=mean(tot.f),CI=1.96*sd(tot.f)/sqrt(n())) |>
+  filter(Experimental.or.control=="Con.") -> malaise_2017_con
+lines(malaise_2017_con$Month, malaise_2017_con$Mean, lwd=2, col=1)
+arrows(malaise_2017_con$Month, 
+       malaise_2017_con$Mean-malaise_2017_con$CI,
+       malaise_2017_con$Month,
+       malaise_2017_con$Mean+malaise_2017_con$CI,
+       angle = 90,
+       code = 3,
+       length = 0.1, 
+       col=1)
+malaise_2017 |>
+  group_by(Month, Experimental.or.control) |>
+  summarise(Mean=mean(tot.f),CI=1.96*sd(tot.f)/sqrt(n())) |>
+  filter(Experimental.or.control=="Exp.") -> malaise_2017_exp
+lines(malaise_2017_exp$Month, malaise_2017_exp$Mean, lwd=2, col=2)
+arrows(malaise_2017_exp$Month, 
+       malaise_2017_exp$Mean-malaise_2017_exp$CI,
+       malaise_2017_exp$Month,
+       malaise_2017_exp$Mean+malaise_2017_exp$CI,
+       angle = 90,
+       code = 3,
+       length = 0.1, 
+       col=2)
+
+# psc 2017
+plot(psc_2017$Month, psc_2017$tot.f, pch=20, frame.plot = F, col=as.factor(cdc_2017$Experimental.or.control))
+psc_2017 |>
+  group_by(Month, Experimental.or.control) |>
+  summarise(Mean=mean(tot.f),CI=1.96*sd(tot.f)/sqrt(n())) |>
+  filter(Experimental.or.control=="Con.") -> psc_2017_con
+lines(psc_2017_con$Month, psc_2017_con$Mean, lwd=2, col=1)
+arrows(psc_2017_con$Month, 
+       psc_2017_con$Mean-psc_2017_con$CI,
+       psc_2017_con$Month,
+       psc_2017_con$Mean+psc_2017_con$CI,
+       angle = 90,
+       code = 3,
+       length = 0.1, 
+       col=1)
+psc_2017 |>
+  group_by(Month, Experimental.or.control) |>
+  summarise(Mean=mean(tot.f),CI=1.96*sd(tot.f)/sqrt(n())) |>
+  filter(Experimental.or.control=="Exp.") -> psc_2017_exp
+lines(psc_2017_exp$Month, psc_2017_exp$Mean, lwd=2, col=2)
+arrows(psc_2017_exp$Month, 
+       psc_2017_exp$Mean-psc_2017_exp$CI,
+       psc_2017_exp$Month,
+       psc_2017_exp$Mean+psc_2017_exp$CI,
+       angle = 90,
+       code = 3,
+       length = 0.1, 
+       col=2)
+
+# cdc 2017
 plot(cdc_2017$Month, cdc_2017$tot.f, pch=20, frame.plot = F, col=as.factor(cdc_2017$Experimental.or.control))
 cdc_2017 |>
   group_by(Month, Experimental.or.control) |>

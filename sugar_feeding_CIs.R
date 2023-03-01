@@ -50,13 +50,13 @@ arrows(sugar_feeding_grouped$month,
 
 # lets filter the data from month 6-12 since thats when the ATSBs were active
 sugar_feeding |>
-  filter(month >= 6) |>
-  mutate(observation=as.factor(1:49)) -> sugar_feeding 
+  filter(month == 12) |>
+  mutate(observation=as.factor(1:7)) -> sugar_feeding 
 sugar_feeding$month <- as.factor(sugar_feeding$month)
 sugar_feeding$Village <- as.factor(sugar_feeding$Village)
 # alright lets try fitting some glms to estimate confidence intervals
 glmer(
-  cbind(females.ASB.positive, TOTAL.Sample.females.Day.2 - females.ASB.positive) ~ (1|Village) + (1|observation),
+  cbind(females.ASB.positive, TOTAL.Sample.females.Day.2 - females.ASB.positive) ~ (1|Village),
   family = binomial, data = sugar_feeding) |>
   summary()
 InvLogit(-0.55492+0.02)
@@ -73,6 +73,7 @@ a <- apply(x, MARGIN=1, FUN = function(x){mean(sample(x,nrow(t),T))-mean(x)})   
 quantile(a, c(0.025,0.975))                                                      # to use sapply but then realised I could use apply
 bounds <- c(mean(t$feeding_rate), mean(t$feeding_rate)+quantile(a, c(0.025,0.975)))
 bounds <- c(0.078,0.38)
+bounds <- c(0.27, 0.395)
 
 # disaggregating by month
 sugar_feeding_CI <- matrix(0,nrow=7,ncol=3)
@@ -87,6 +88,16 @@ for (i in 6:12) {
   sugar_feeding_CI[i-5,] <- c(mean(this_sugar_feeding$feeding_rate), 
                               mean(this_sugar_feeding$feeding_rate)+quantile(a, c(0.025,0.975)))
 }
+
+matrix(c(0.6047629, 0.3342333, 0.1414194,
+         0.4703416, 0.3452918, 0.2385171,
+         0.3913919, 0.2734477, 0.1805043,
+         0.5136576, 0.3460608, 0.2095825,
+         0.4378784, 0.2979038, 0.1877307,
+         0.5081354, 0.3717305, 0.2531004,
+         0.6122226, 0.3614214, 0.1686725), byrow=T, ncol=3) |>
+  apply(MARGIN=2, FUN=mean) -> monthly
+bounds <- monthly[c(1,3)]
 
 # okay what range of counts does malariasim predict for those confidence intervals?
 mali <- MLI
@@ -115,8 +126,8 @@ par(las=1)
 plot(o[[1]]$timestep/365+2000,
      o[[1]]$total_M_gambiae/180.0287, type="l", lwd=2, frame.plot = F, xlim=c(2016,2018),
      xlab="Year", ylab="Count", ylim=c(0,800))
-polygon(c(out_nc_35[[10]]$timestep/365+2000, rev(out_nc_35[[11]]$timestep/365+2000)),
-        c(out_nc_35[[10]]$total_M_gambiae/180.0287, rev(out_nc_35[[11]]$total_M_gambiae)/180.0287),
+polygon(c(out_bounds[[1]]$timestep/365+2000, rev(out_bounds[[2]]$timestep/365+2000)),
+        c(out_bounds[[1]]$total_M_gambiae/180.0287, rev(out_bounds[[2]]$total_M_gambiae)/180.0287),
         col = adjustcolor("dodgerblue", alpha.f = 0.4), border = FALSE)
 
 # points(2017+cdc_2017$Month/12, cdc_2017$tot.f, pch=20, col=as.factor(cdc_2017$Experimental.or.control))
