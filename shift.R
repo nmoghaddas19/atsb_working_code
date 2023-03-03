@@ -233,6 +233,10 @@ hlc |>
                                              Month))))) |>
   group_by(Year, Month, Site) |>
   summarise(Count=n(), Outdoor=sum(Position=="Outside"), Indoor=sum(Position=="Inside")) -> hlc_bysitemonth
+hlc_bysitemonth$Month_Year <- paste0(hlc_bysitemonth$Month,hlc_bysitemonth$Year)
+hlc_bysitemonth |>
+  mutate(Treatment = ifelse(Site %in% c("Krekrelo", "Sirakele", "Trekrou", "Farabale", "Kignele", "Tiko", "Sambadani"), 1, 0)) |>
+  mutate(Month_Year = parse_date_time(Month_Year, "my")) -> hlc_bysitemonth
 hlc_bysitemonth$Month <- month(hlc_bysitemonth$Month_Year)
 hlc_2017 <- hlc_bysitemonth
 
@@ -297,3 +301,4 @@ arrows(2017+hlc_2017_exp$Month/12,
 legend(x="topleft", legend=c("Control data", "ATSB data", "Control model", "ATSB model"), 
        col=c(1,2,1,"dodgerblue"), lwd=2, lty=c(2,2,1,1), bty="n")
 title("Human landing catch")
+

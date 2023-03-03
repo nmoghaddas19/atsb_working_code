@@ -79,7 +79,7 @@ lines(out_nc[[2]]$timestep/365+2000,
 lines(out_nc[[3]]$timestep/365+2000, 
       out_nc[[3]]$n_detect_730_3649 / out_nc[[3]]$n_730_3649,
       lwd=2, col=4)
-legend(x="topright", legend=c("10% and 10%", "5% and 15%", "0% and 20%", "No ATSB"), col=c(1,2,4,7), 
+legend(x="topright", legend=c("10% and 10%", "5% and 15%", "0% and 20%", "No ATSB"), col=c(7,2,4,1), 
        lty = 1, lwd=2, bty = "n")
 
 kayes_rural_params <- site_parameters(

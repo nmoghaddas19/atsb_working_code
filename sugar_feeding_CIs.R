@@ -50,13 +50,14 @@ arrows(sugar_feeding_grouped$month,
 
 # lets filter the data from month 6-12 since thats when the ATSBs were active
 sugar_feeding |>
-  filter(month == 12) |>
-  mutate(observation=as.factor(1:7)) -> sugar_feeding 
+  filter(month > 5) |>
+  mutate(observation=as.factor(1:49)) -> sugar_feeding 
 sugar_feeding$month <- as.factor(sugar_feeding$month)
 sugar_feeding$Village <- as.factor(sugar_feeding$Village)
+
 # alright lets try fitting some glms to estimate confidence intervals
 glmer(
-  cbind(females.ASB.positive, TOTAL.Sample.females.Day.2 - females.ASB.positive) ~ (1|Village),
+  cbind(females.ASB.positive, TOTAL.Sample.females.Day.2 - females.ASB.positive) ~ (1|Village) + (1|month) + (1|observation),
   family = binomial, data = sugar_feeding) |>
   summary()
 InvLogit(-0.55492+0.02)
@@ -115,8 +116,8 @@ for (i in 1:length(bounds)) {
                      mu_atsb = c(bounds[i], bounds[i], bounds[i]))
   )
   kayes_rural_params <- set_atsb(parameters = kayes_rural_params,
-                                 timesteps = (17*365+6*30):(18*365), 
-                                 coverages = rep(1,366-6*30))
+                                 timesteps = (17*365+5*30):(18*365), 
+                                 coverages = rep(1,366-5*30))
   out_bounds[[name]] <- run_simulation(timesteps = kayes_rural_params$timesteps,
                                       parameters = kayes_rural_params)
   print(i)

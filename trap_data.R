@@ -164,6 +164,35 @@ arrows(2017,
 points(malaise_2017$Month, malaise_2017$tot.f, pch=20, col=as.factor(malaise_2017$Experimental.or.control))
 points(psc_2017$Month, psc_2017$tot.f, pch=20, col=as.factor(psc_2017$Experimental.or.control))
 
+# hlc 
+plot(hlc_2017$Month, hlc_2017$Count, pch=20, frame.plot = F, col=as.factor(hlc_2017$Treatment))
+hlc_2017 |>
+  group_by(Month, Treatment) |>
+  summarise(Mean=mean(Count),CI=1.96*sd(Count)/sqrt(n())) |>
+  filter(Treatment==0) -> hlc_2017_con
+lines(hlc_2017_con$Month, hlc_2017_con$Mean, lwd=2, col=1)
+arrows(hlc_2017_con$Month, 
+       hlc_2017_con$Mean-hlc_2017_con$CI,
+       hlc_2017_con$Month,
+       hlc_2017_con$Mean+hlc_2017_con$CI,
+       angle = 90,
+       code = 3,
+       length = 0.1, 
+       col=1)
+hlc_2017 |>
+  group_by(Month, Treatment) |>
+  summarise(Mean=mean(Count),CI=1.96*sd(Count)/sqrt(n())) |>
+  filter(Treatment==1) -> hlc_2017_exp
+lines(hlc_2017_exp$Month, hlc_2017_exp$Mean, lwd=2, col=2)
+arrows(hlc_2017_exp$Month, 
+       hlc_2017_exp$Mean-hlc_2017_exp$CI,
+       hlc_2017_exp$Month,
+       hlc_2017_exp$Mean+hlc_2017_exp$CI,
+       angle = 90,
+       code = 3,
+       length = 0.1, 
+       col=2)
+title("Human landing catch")
 
 # glms
 cdc_2017$Vilage <- as.factor(cdc_2017$Vilage)
