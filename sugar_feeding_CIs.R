@@ -59,6 +59,15 @@ sugar_feeding |>
 sugar_feeding$month <- as.factor(sugar_feeding$month)
 sugar_feeding$Village <- as.factor(sugar_feeding$Village)
 
+sugar_feeding |>
+  group_by(month) |>
+  summarise(feeding_rate=females.ASB.positive/TOTAL.Sample.females.Day.2) -> t
+
+x <- matrix(rep(t$feeding_rate,5000), byrow=T, ncol=length(t$feeding_rate)) # these two lines took me 2 hours 
+a <- apply(x, MARGIN=1, FUN = function(x){mean(sample(x,49,T))-mean(x)})    # for some reason, i was trying to learn
+quantile(a, c(0.025,0.975))                                                 # to use sapply but then realised I could use apply
+
+
 # alright lets try fitting some glms to estimate confidence intervals
 glmer(
   cbind(females.ASB.positive, TOTAL.Sample.females.Day.2 - females.ASB.positive) ~ (1|Village) + (1|month) + (1|observation),
