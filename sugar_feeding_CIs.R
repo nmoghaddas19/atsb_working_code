@@ -24,13 +24,15 @@ library(site)
 sugar_feeding <- read.csv("atsb_working_code/DB monthly natural sugar and ASB feeding/day 2-Table 1.csv")
 sugar_feeding <- sugar_feeding[-(64:65),] # final two rows are NAs so removing them
 
+sugar_feeding |>
+  filter(month>5) -> sugar_feeding
 # visualise the data
-par(las=1)
+par(las=1, font.axis=2)
 table(sugar_feeding$month)
 plot.default(sugar_feeding$month, 
              sugar_feeding$females.ASB.positive/sugar_feeding$TOTAL.Sample.females.Day.2,
-             cex=0.9, pch=20, frame.plot = F, xlab = "Month", ylab = "% bait fed",
-             ylim = c(0,1))
+             cex=1.5, pch=20, frame.plot = F, xlab = "Month", ylab = "% bait fed",
+             ylim = c(0,1), cex.axis=2, cex.lab = 1.4)
 qt(c(0.025,0.975), df = 6) # t distribution multiplier for 95% CIs with 6 degrees of freedom
 sugar_feeding |>
   group_by(month) |>
@@ -38,7 +40,7 @@ sugar_feeding |>
             CI = 2.44*sd(females.ASB.positive/TOTAL.Sample.females.Day.2)/sqrt(n())) -> sugar_feeding_grouped
 polygon(c(4,12,12,4), c(0.15,0.15,0.45,0.45),
         col = adjustcolor("grey", alpha.f = 0.5), border = F)
-lines(sugar_feeding_grouped$month, sugar_feeding_grouped$mean, col="red", lwd=2)
+lines(sugar_feeding_grouped$month, sugar_feeding_grouped$mean, col="red", lwd=6)
 arrows(sugar_feeding_grouped$month, 
        sugar_feeding_grouped$mean-sugar_feeding_grouped$CI,
        sugar_feeding_grouped$month,
@@ -46,7 +48,9 @@ arrows(sugar_feeding_grouped$month,
        angle = 90,
        code = 3,
        length = 0.1, 
-       col="red")
+       col="red",
+       lwd = 3)
+title("Sugar feeding rates", cex=1.5)
 
 # lets filter the data from month 6-12 since thats when the ATSBs were active
 sugar_feeding |>

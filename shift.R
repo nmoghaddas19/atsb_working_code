@@ -2,10 +2,11 @@
 # time series data and shift it to best fit a set of true data
 
 # import standard malariasim run 
-malariasim_control <- o[[1]]
+malariasim_control <- readRDS("OneDrive_1_2-13-2023/out_mali.RDS")$Kayes_rural_data
 
 # import data
 cdc_2017 <- read.csv("atsb_working_code/DB CDC Malaise PSC catches 2017/CDC-Table 1.csv")
+
 
 # find scaling factor 
 cdc_2017 |>
