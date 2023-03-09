@@ -8,17 +8,19 @@
 
 library(malariasimulation)
 library(dplyr)
+library(foresite)
+library(site)
 
 # load in the count data
 cdc_2017 <- read.csv("atsb_working_code/DB CDC Malaise PSC catches 2017/CDC-Table 1.csv")
 
 # load control malariasim run
-malariasim_control <- readRDS("OneDrive_1_2-13-2023/out_mali.RDS")$Kayes_rural_data
+malariasim_control <- readRDS("atsb_working_code/out_mali.RDS")$Kayes_rural_data
 
 # find scaling factor 
 cdc_2017 |>
   group_by(Month, Experimental.or.control) |>
-  summarise(Mean=mean(tot.f),CI=1.96*sd(tot.f)/sqrt(n())) |>
+  summarise(Mean=mean(tot.f),CI=2.44*sd(tot.f)/sqrt(n())) |>
   filter(Experimental.or.control=="Con.") -> cdc_2017_con
 scaler <- max(cdc_2017_con$Mean)/max(malariasim_control$total_M_gambiae[(17*365):(18*365)])
 
@@ -78,3 +80,92 @@ arrows(2017+(cdc_2017_exp$Month)/12,
 legend(x="topleft", legend=c("Control data", "ATSB data", "Control model", "ATSB model"), 
        col=c(1,2,1,"dodgerblue"), lwd=2, lty=c(2,2,1,1), bty="n")
 title("CDC traps")
+
+# bootstrap CIs ----
+
+d_con <- matrix(0, nrow=7, ncol=3)
+for (i in 6:12) {
+  cdc_2017 |>
+    filter(Month == i & Experimental.or.control == "Con.") -> t
+  x <- matrix(rep(t$tot.f, 5000), byrow = T, ncol = length(t$tot.f))
+  a <- apply(x, MARGIN = 1, FUN = function(x){mean(sample(x,7,T))-mean(x)})
+  d_con[i-5,] <- quantile(a, c(0.025,0.5,0.975)) + mean(t$tot.f)
+}
+
+d_exp <- matrix(0, nrow=7, ncol=3)
+for (i in 6:12) {
+  cdc_2017 |>
+    filter(Month == i & Experimental.or.control == "Exp.") -> t
+  x <- matrix(rep(t$tot.f, 5000), byrow = T, ncol = length(t$tot.f))
+  a <- apply(x, MARGIN = 1, FUN = function(x){mean(sample(x,7,T))-mean(x)})
+  d_exp[i-5,] <- quantile(a, c(0.025,0.5,0.975)) + mean(t$tot.f)
+}
+plot(malariasim_control$timestep/365+2000 + days_shifted/365, 
+     malariasim_control$total_M_gambiae*scaler,
+     type="l", lwd=2, frame.plot = F, ylim=c(0,800), xlim=c(2016,2018),
+     xlab="Year", ylab="Population")
+lines(2017+(0:6+6)/12, d_con[,2], lwd=2, col=1, lty=2)
+arrows(2017+(0:6+6)/12,
+       d_con[,1],
+       2017+(0:6+6)/12,
+       d_con[,3],
+       angle=90,
+       code=3,
+       length=0.05,
+       col=1)
+lines(2017+(0:6+6)/12, d_exp[,2], lwd=2, col=2, lty=2)
+arrows(2017+(0:6+6)/12,
+       d_exp[,1],
+       2017+(0:6+6)/12,
+       d_exp[,3],
+       angle=90,
+       code=3,
+       length=0.05,
+       col=2)
+
+# ----
+
+mali <- MLI
+kayes_rural <- single_site(mali, 5)
+feed <- seq(0.20,0.24,length.out=5)
+out_feed <- list()
+for (i in 1:length(feed)) {
+  name <- as.character(feed[i])
+  kayes_rural_params <- site_parameters(
+    interventions = kayes_rural$interventions,
+    demography = kayes_rural$demography,
+    vectors = kayes_rural$vectors,
+    seasonality = kayes_rural$seasonality,
+    eir = kayes_rural$eir$eir[1],
+    overrides = list(human_population = 5000,
+                     mu_atsb = c(feed[i], feed[i], feed[i]))
+  )
+  kayes_rural_params <- set_atsb(parameters = kayes_rural_params,
+                                 timesteps = (17*365+5*30):(18*365), 
+                                 coverages = rep(1,366-5*30))
+  out_feed[[name]] <- run_simulation(timesteps = kayes_rural_params$timesteps,
+                                   parameters = kayes_rural_params)
+  print(i)
+}
+sum_of_squares <- c()
+for (i in 1:length(feed)) {
+  true_values <- cdc_2017_exp$Mean[4:8]
+  y <- out_feed[[i]]$total_M_gambiae*scaler
+  x <- out_feed[[i]]$timestep/365 + 2000 + days_shifted/365
+  model_values <- approx(x, y, xout= 2017 + c(7:11)/12)
+  sum_of_squares[i] <- sum((true_values - model_values$y)^2)
+}
+plot(feed, sum_of_squares, type="l", lwd=2, frame.plot = F, xlab="Feeding rate")
+# minimising sum of squared differences gives excess mortality of 23% as the 
+# best fit to the ATSB arm count data
+
+plot(malariasim_control$timestep/365+2000 + days_shifted/365, 
+     malariasim_control$total_M_gambiae*scaler,
+     type="l", lwd=2, frame.plot = F, ylim=c(0,800), xlim=c(2016,2018),
+     xlab="Year", ylab="Population")
+lines(out_feed[[4]]$timestep/365+2000+days_shifted/365,
+      out_feed[[4]]$total_M_gambiae*scaler,
+      col=2,lwd=2)
+lines(2017+(cdc_2017_con$Month)/12, cdc_2017_con$Mean, lwd=2, col=1, lty=2)
+lines(2017+(cdc_2017_exp$Month)/12, cdc_2017_exp$Mean, lwd=2, col=2, lty=2)
+
