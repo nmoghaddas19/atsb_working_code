@@ -147,6 +147,7 @@ for (i in 1:length(feed)) {
                                    parameters = kayes_rural_params)
   print(i)
 }
+
 sum_of_squares <- c()
 for (i in 1:length(feed)) {
   true_values <- cdc_2017_exp$Mean[4:8]
@@ -158,6 +159,35 @@ for (i in 1:length(feed)) {
 plot(feed, sum_of_squares, type="l", lwd=2, frame.plot = F, xlab="Feeding rate")
 # minimising sum of squared differences gives excess mortality of 23% as the 
 # best fit to the ATSB arm count data
+
+# retrying above using optim function 
+out_feed <- list()
+sum_squares <- function(feeding_rate) {
+  name <- as.character(feeding_rate)
+  kayes_rural_params <- site_parameters(
+    interventions = kayes_rural$interventions,
+    demography = kayes_rural$demography,
+    vectors = kayes_rural$vectors,
+    seasonality = kayes_rural$seasonality,
+    eir = kayes_rural$eir$eir[1],
+    overrides = list(human_population = 5000,
+                     mu_atsb = c(feeding_rate, feeding_rate, feeding_rate))
+    )
+  kayes_rural_params <- set_atsb(parameters = kayes_rural_params,
+                                 timesteps = (17*365+5*30):(18*365), 
+                                 coverages = rep(1,366-5*30))
+  out_feed[[name]] <- run_simulation(timesteps = 19*365,
+                                     parameters = kayes_rural_params)
+  true_values <- cdc_2017_exp$Mean[4:8]
+  y <- out_feed[[name]]$total_M_gambiae*scaler
+  x <- out_feed[[name]]$timestep/365 + 2000 + days_shifted/365
+  model_values <- approx(x, y, xout= 2017 + c(7:11)/12)
+  sum_of_squares <- sum((true_values - model_values$y)^2)
+  print("1")
+  return(sum_of_squares)
+}
+
+res1 <- optim(par=0.15, fn = sum_squares, method = "Brent", lower=0.1, upper=0.3, control = list(maxit=5))
 
 plot(malariasim_control$timestep/365+2000 + days_shifted/365, 
      malariasim_control$total_M_gambiae*scaler,
