@@ -112,8 +112,14 @@ fit <- glmer.nb(Count ~ as.factor(Experimental.or.control) + Month
            + (1|Vilage) + (1|Trap_number) + (1|Observation), data=cdc_2017_bytrap) |> summary()
 rho1_2 <- vcov(fit)[1,2]/(sqrt(vcov(fit)[1,1])*sqrt(vcov(fit)[2,2]))
 sigma1_2 <-  sqrt(vcov(fit)[1,1] + vcov(fit)[2,2] + 2 * rho1_2 *(sqrt(vcov(fit)[1,1]) *(sqrt(vcov(fit)[2,2]))))
+summary(fit)
 
 cdc_2017_bytrap |> 
   filter(Experimental.or.control=="Exp.") |>
   summarise(Mean=mean(Count))
+
+
+
+
+
  

@@ -17,3 +17,4 @@ abline(lm(y ~ x), col="dodgerblue", lwd=2)
 plot(sugar_feeding$month, 
      sugar_feeding$females.Anth..positive.Day.2/sugar_feeding$Sample.female.Anth..Day.2,
      pch=20, frame.plot = F, xlab="Month", ylab="Anthrone positive")
+
