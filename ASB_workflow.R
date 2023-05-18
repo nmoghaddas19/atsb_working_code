@@ -8,6 +8,7 @@
 # generate predictions.                                                        #
 ################################################################################
 
+setwd("~/GitHub/")
 # load in packages
 library(malariasimulation)
 library(ICDMM)
@@ -16,26 +17,28 @@ library(foresite)
 library(lubridate)
 library(RColorBrewer)
 library(lme4)
+library(dplyr)
 
 # functions
-function(p, V, method = "mcculloch", inverse = FALSE) {
-  if(method == "mcculloch" & inverse) {
-    method <- "zeger"
-    warning("The McCulloch method can't be used when inverse = TRUE. Changing to Zeger.")
-  }
-  stopifnot(!(method == "mcculloch" & inverse))
-  Beta <- qlogis(p)
-  if(method == "mcculloch") {
-    return(plogis(Beta - 0.5 * V * tanh(Beta * (1 + 2 * exp(-0.5 * V))/6)))
-  }
-  if(method == "zeger") {
-    if (inverse) {
-      plogis(Beta * sqrt(256 * V / (75 * pi^2) + 1))
-    } else {
-      plogis(Beta/sqrt(1 + ((16 * sqrt(3))/(15 * pi))^2 * V))
+jensen.logit.adjust <-
+  function(p, V, method = "mcculloch", inverse = FALSE) {
+    if(method == "mcculloch" & inverse) {
+      method <- "zeger"
+      warning("The McCulloch method can't be used when inverse = TRUE. Changing to Zeger.")
+    }
+    stopifnot(!(method == "mcculloch" & inverse))
+    Beta <- qlogis(p)
+    if(method == "mcculloch") {
+      return(plogis(Beta - 0.5 * V * tanh(Beta * (1 + 2 * exp(-0.5 * V))/6)))
+    }
+    if(method == "zeger") {
+      if (inverse) {
+        plogis(Beta * sqrt(256 * V / (75 * pi^2) + 1))
+      } else {
+        plogis(Beta/sqrt(1 + ((16 * sqrt(3))/(15 * pi))^2 * V))
+      }
     }
   }
-}
 
 # load in data
 dat.all <- read.csv("atsb_working_code/ZAM.ASB.Target Summaries.2021.10.01.clean.csv")
@@ -154,6 +157,8 @@ feed_rates <- cbind(control = numeric(10), lower_fun, upper_fun, lower_gamb, upp
 rownames(feed_rates) <- names(fixef(fit0))
 
 # forecast predictions using malariasimulation
+# !!! TWO APPROCAHES !!! 
+# OPTION ONE: using historical assumptions in foresite site files ####
 zambia <- ZMB
 zambia$sites$name_1
 western_rural <- single_site(zambia, 18)
@@ -283,6 +288,73 @@ polygon(c(out_data$Control$timestep/365 +2000, rev(out_data$Control$timestep/365
         c(lower,rev(upper)), col = adjustcolor(col = "orange", alpha.f = 0.5),
         border = F)
 
+# stop ####
 
-int <- western_rural$interventions
+# OPTION TWO: calibrating to baseline prevalence and predicting forwards ####
+zambia <- ZMB
+western_rural <- single_site(zambia, 18)
+
+# int <- western_rural$interventions
+# int <- rbind(int, int[rep(23,3),])
+# int$year[24:26] <- c(2023:2025)
+# int <- int[c(18,21,24),]
+# 
+# demog <- western_rural$demography
+# demog |>
+#   filter(year>=2017) -> demog
+# vectors <- western_rural$vectors
+# western_rural$seasonality
+# western_rural$eir
+# 
+# western_rural_params <- site_parameters(
+#   interventions = int,
+#   demography = demog,
+#   vectors = western_rural$vectors,
+#   seasonality = western_rural$seasonality,
+#   eir = 340,
+#   overrides = list(human_population = 10000,
+#                    mu_atsb = c(0,0,0))
+# )
+
+data <- data_frame(Cluster = 1:10, 
+                   itn_timestep_1 = rep(365-30, 10),
+                   itn_coverage_1 = rep(western_rural$interventions$itn_use[18], 10),
+                   resistance_1 = rep(western_rural$interventions$pyrethroid_resistance[18], 10),
+                   itn_timestep_2 = rep(4*365-30, 10),
+                   itn_coverage_2 = rep(western_rural$interventions$itn_use[21], 10),
+                   resistance_2 = rep(western_rural$interventions$pyrethroid_resistance[21], 10),
+                   itn_timestep_3 = rep(7*365-30, 10),
+                   itn_coverage_3 = rep(0.57, 10),
+                   resistance_3 = rep(0.52, 10),
+                   irs_timestep_1 = rep(365-30, 10),
+                   irs_coverage_1 = rep(western_rural$interventions$irs_cov[18], 10),
+                   irs_timestep_2 = rep(4*365-30, 10),
+                   irs_coverage_2 = rep(western_rural$interventions$irs_cov[21], 10),
+                   irs_timestep_3 = rep(7*365-30, 10),
+                   irs_coverage_3 = rep(0.8, 10), 
+                   arab = rep(western_rural$vectors$prop[1], 10),
+                   fun = rep(western_rural$vectors$prop[2], 10),
+                   gamb = rep(western_rural$vectors$prop[3], 10)
+                   )
+
+itn_distributions <- c(365-30, 4*365-30, 7*365-30)
+irs_campaigns <- c(365-30, 4*365, 7*365-30)
+itn_coverages <- c(western_rural$interventions$itn_use[c(18,21)], 0.57)
+irs_coverages <- c(western_rural$interventions$irs_cov[c(18,21)], 0.80)
+resistance <- c(western_rural$interventions$pyrethroid_resistance)
+
+
+
+out <- run_simulation(timesteps = western_rural_params$timesteps,
+                      parameters = western_rural_params)
+
+par(las=1)
+plot(out$timestep/365+2017, out$n_detect_730_3649/out$n_730_3649,
+     type = "l", lwd=2, xlab="Year", ylab="PfPr2-10", frame.plot = F,
+     ylim=c(0,1), xlim=c(2017,2026))
+grid()
+abline(v=itn_distributions/365+2017, lty=2)
+# stop ####
+
+
 
