@@ -44,12 +44,13 @@ plot(1:80, sum_of_squares, type="l", lwd=2, frame.plot = F, xlab="Days shifted")
 days_shifted <- which(sum_of_squares == min(sum_of_squares))
 
 # lets see the data with that shift
+par(las=1,  = )
 plot(malariasim_control$timestep/365+2000 + days_shifted/365, 
      malariasim_control$total_M_gambiae*scaler,
      type="l", lwd=2, frame.plot = F, ylim=c(0,800), xlim=c(2016,2018),
-     xlab="Year", ylab="Population")
-polygon(c(out_bounds[[1]]$timestep/365+2000+days_shifted/365, rev(out_bounds[[2]]$timestep/365+2000+days_shifted/365)),
-        c(out_bounds[[1]]$total_M_gambiae*scaler, rev(out_bounds[[2]]$total_M_gambiae)*scaler),
+     xlab="Year", ylab="Population", cex.lab=1.2)
+polygon(c(out_bounds[[2]]$timestep/365+2000+days_shifted/365, rev(out_bounds[[3]]$timestep/365+2000+days_shifted/365)),
+        c(out_bounds[[2]]$total_M_gambiae*scaler, rev(out_bounds[[3]]$total_M_gambiae)*scaler),
         col = adjustcolor("dodgerblue", alpha.f = 0.5), border = FALSE)
 cdc_2017 |>
   group_by(Month, Experimental.or.control) |>

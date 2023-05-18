@@ -1,7 +1,8 @@
-setwd("Documents/GitHub/")
+setwd("~/Documents/GitHub/")
 
 library(lme4)
 library(dplyr)
+library(RColorBrewer)
 
 # load in trap data here
 cdc_2017 <- read.csv("atsb_working_code/DB CDC Malaise PSC catches 2017/CDC-Table 1.csv")
@@ -26,8 +27,25 @@ cdc_2017_bytrap$Month <- as.numeric(cdc_2017_bytrap$Month)
 cdc_2017_bytrap$Count <- as.numeric(cdc_2017_bytrap$Count)
 
 # visualise
-plot(cdc_2017_bytrap$Month, cdc_2017_bytrap$Count, col=as.factor(cdc_2017_bytrap$Experimental.or.control),
-     frame.plot = F, pch=20, cex=0.7, xlab = "Month", ylab = "Count")
+par(mfrow=c(3,3))
+Village <- "Madina"
+for (i in 4:12) {
+  cdc_2017_bytrap |>
+    filter(Month==i & Vilage==Village) -> month_data
+  barplot(month_data$Count, col = brewer.pal(10, "PiYG"),
+          names.arg = 1:10)
+  title(paste0(Village," Month ",i))
+}
+
+cdc_2017_bytrap |> 
+  filter(Vilage == "Madina") -> village_data
+
+cdc_2017_bytrap |>
+  filter(Experimental.or.control=="Con.") -> cdc_2017_bytrap
+
+plot(cdc_2017_bytrap$Month, cdc_2017_bytrap$Count, col=as.factor(cdc_2017_bytrap$Vilage),
+     frame.plot = F, pch=20, cex=1, xlab = "Month", ylab = "Count")
+grid()
 cdc_2017_bytrap |>
   filter(Experimental.or.control=="Con.") |>
   group_by(Month) |>

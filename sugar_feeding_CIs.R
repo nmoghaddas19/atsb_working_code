@@ -27,12 +27,12 @@ sugar_feeding <- sugar_feeding[-(64:65),] # final two rows are NAs so removing t
 sugar_feeding |>
   filter(month>5) -> sugar_feeding
 # visualise the data
-par(las=1, font.axis=2)
+par(las=1)
 table(sugar_feeding$month)
 plot.default(sugar_feeding$month, 
              sugar_feeding$females.ASB.positive/sugar_feeding$TOTAL.Sample.females.Day.2,
-             cex=1.5, pch=20, frame.plot = F, xlab = "Month", ylab = "% bait fed",
-             ylim = c(0,1), cex.axis=2, cex.lab = 1.4)
+             cex=1.1, pch=20, frame.plot = F, xlab = "Month", ylab = "% bait fed",
+             ylim = c(0,1), cex.axis=1.2)
 qt(c(0.025,0.975), df = 6) # t distribution multiplier for 95% CIs with 6 degrees of freedom
 sugar_feeding |>
   group_by(month) |>
@@ -40,7 +40,7 @@ sugar_feeding |>
             CI = 2.44*sd(females.ASB.positive/TOTAL.Sample.females.Day.2)/sqrt(n())) -> sugar_feeding_grouped
 polygon(c(4,12,12,4), c(0.15,0.15,0.45,0.45),
         col = adjustcolor("grey", alpha.f = 0.5), border = F)
-lines(sugar_feeding_grouped$month, sugar_feeding_grouped$mean, col="red", lwd=6)
+lines(sugar_feeding_grouped$month, sugar_feeding_grouped$mean, col="red", lwd=2)
 arrows(sugar_feeding_grouped$month, 
        sugar_feeding_grouped$mean-sugar_feeding_grouped$CI,
        sugar_feeding_grouped$month,
@@ -49,7 +49,7 @@ arrows(sugar_feeding_grouped$month,
        code = 3,
        length = 0.1, 
        col="red",
-       lwd = 3)
+       lwd = 1.5)
 title("Sugar feeding rates", cex=1.5)
 
 # lets filter the data from month 6-12 since thats when the ATSBs were active
@@ -78,7 +78,9 @@ InvLogit(-0.1694-0.2221+0.3349*c(1.96, 0, -1.96))
 
 # alright lets use bootstrap to generate some confidence intervals
 # grouping months together
+sugar_feeding$month <- as.numeric(sugar_feeding$month)
 sugar_feeding |>
+  filter(month<=6) |>
   group_by(month) |>
   summarise(feeding_rate=females.ASB.positive/TOTAL.Sample.females.Day.2) -> t
 
@@ -86,8 +88,8 @@ x <- matrix(rep(t$feeding_rate,5000), byrow=T, ncol=length(t$feeding_rate))     
 a <- apply(x, MARGIN=1, FUN = function(x){mean(sample(x,nrow(t),T))-mean(x)})    # for some reason, I was trying to learn
 quantile(a, c(0.025,0.975))                                                      # to use sapply but then realised I could use apply
 bounds <- c(mean(t$feeding_rate), mean(t$feeding_rate)+quantile(a, c(0.025,0.975)))
-bounds <- c(0.078,0.38)
-bounds <- c(0.27, 0.395)
+
+
 
 # disaggregating by month
 sugar_feeding_CI <- matrix(0,nrow=7,ncol=3)
