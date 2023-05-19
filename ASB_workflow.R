@@ -18,6 +18,8 @@ library(lubridate)
 library(RColorBrewer)
 library(lme4)
 library(dplyr)
+library(cali)
+library(umbrella)
 
 # functions
 jensen.logit.adjust <-
@@ -316,31 +318,41 @@ western_rural <- single_site(zambia, 18)
 #                    mu_atsb = c(0,0,0))
 # )
 
-# starting simulation in 2016, ITN distributions in 2017 and 2020, baseline at 2023
+# starting simulation in 2014, ITN distributions in 2015 and 2018, baseline at 2021
 data <- data_frame(Cluster = 1:10, 
-                   pfpr_baseline = rnorm(10, mean=0.3, sd=0.05),
+                   feed_rate_arab = rnorm(10, mean=0.14, sd=0.05),
+                   feed_rate_arab_lo = rnorm(10, mean=0.08, sd=0.04),
+                   feed_rate_arab_hi = rnorm(10, mean=0.21, sd=0.04),
+                   feed_rate_fun = rnorm(10, mean=0.14, sd=0.05),
+                   feed_rate_fun_lo = rnorm(10, mean=0.08, sd=0.04),
+                   feed_rate_fun_hi = rnorm(10, mean=0.21, sd=0.04),
+                   feed_rate_gamb = rnorm(10, mean=0.14, sd=0.05),
+                   feed_rate_gamb_lo = rnorm(10, mean=0.08, sd=0.04),
+                   feed_rate_gamb_hi = rnorm(10, mean=0.21, sd=0.04),
+                   pfpr_baseline = rnorm(10, mean=0.2, sd=0.05),
                    baseline_time = round(rnorm(10, mean=7*365+50, sd=20), digits = 0),
                    itn_timestep_1 = rep(365-30, 10),
-                   itn_coverage_1 = rep(western_rural$interventions$itn_use[18], 10),
-                   resistance_1 = rep(western_rural$interventions$pyrethroid_resistance[18], 10),
+                   itn_coverage_1 = rep(western_rural$interventions$itn_use[16], 10),
+                   resistance_1 = rep(western_rural$interventions$pyrethroid_resistance[16], 10),
                    itn_timestep_2 = rep(4*365-30, 10),
-                   itn_coverage_2 = rep(western_rural$interventions$itn_use[21], 10),
-                   resistance_2 = rep(western_rural$interventions$pyrethroid_resistance[21], 10),
+                   itn_coverage_2 = rep(western_rural$interventions$itn_use[19], 10),
+                   resistance_2 = rep(western_rural$interventions$pyrethroid_resistance[19], 10),
                    itn_timestep_3 = rep(7*365-30, 10),
-                   itn_coverage_3 = rep(0.57, 10),
+                   itn_coverage_3 = rep(western_rural$interventions$itn_use[22], 10),
                    resistance_3 = rep(0.52, 10),
+                   retention = rep(5*365, 10),
                    irs_timestep_1 = rep(365-30, 10),
-                   irs_coverage_1 = rep(western_rural$interventions$irs_cov[18], 10),
+                   irs_coverage_1 = rep(western_rural$interventions$irs_cov[16], 10),
                    irs_timestep_2 = rep(4*365-30, 10),
-                   irs_coverage_2 = rep(western_rural$interventions$irs_cov[21], 10),
+                   irs_coverage_2 = rep(western_rural$interventions$irs_cov[19], 10),
                    irs_timestep_3 = rep(7*365-30, 10),
-                   irs_coverage_3 = rep(0.8, 10), 
-                   ft_1 = rep(western_rural$interventions$tx_cov[18], 10),
-                   prop_act_1 = rep(western_rural$interventions$prop_act[18], 10),
-                   ft_2 = rep(western_rural$interventions$tx_cov[21], 10),
-                   prop_act_2 = rep(western_rural$interventions$prop_act[21], 10),
-                   ft_3 = rep(0.65, 10),
-                   prop_act_3 = rep(0.975, 10),
+                   irs_coverage_3 = rep(western_rural$interventions$irs_cov[22], 10), 
+                   ft_1 = rep(western_rural$interventions$tx_cov[16], 10),
+                   prop_act_1 = rep(western_rural$interventions$prop_act[16], 10),
+                   ft_2 = rep(western_rural$interventions$tx_cov[19], 10),
+                   prop_act_2 = rep(western_rural$interventions$prop_act[19], 10),
+                   ft_3 = rep(western_rural$interventions$tx_cov[22], 10),
+                   prop_act_3 = rep(western_rural$interventions$prop_act[22], 10),
                    arab = rep(western_rural$vectors$prop[1], 10),
                    fun = rep(western_rural$vectors$prop[2], 10),
                    gamb = rep(western_rural$vectors$prop[3], 10),
@@ -374,28 +386,107 @@ cluster_params <- set_clinical_treatment(parameters = cluster_params,
                                          coverages = c(data$ft_1[i]*data$prop_act_1[i],
                                                        data$ft_2[i]*data$prop_act_2[i],
                                                        data$ft_3[i]*data$prop_act_3[i]))
+pyrethroid_params <- read.csv("pyrethroid_only_nets.csv")
+dn0_1 <- pyrethroid_params$dn0_med[data$resistance_1[i]*100+1]
+dn0_2 <- pyrethroid_params$dn0_med[data$resistance_2[i]*100+1]
+dn0_3 <- pyrethroid_params$dn0_med[data$resistance_3[i]*100+1]
+rn0_1 <- pyrethroid_params$rn0_med[data$resistance_1[i]*100+1]
+rn0_2 <- pyrethroid_params$rn0_med[data$resistance_2[i]*100+1]
+rn0_3 <- pyrethroid_params$rn0_med[data$resistance_3[i]*100+1]
+gamman_1 <- pyrethroid_params$gamman_med[data$resistance_1[i]*100+1]
+gamman_2 <- pyrethroid_params$gamman_med[data$resistance_2[i]*100+1]
+gamman_3 <- pyrethroid_params$gamman_med[data$resistance_3[i]*100+1]
 
 cluster_params <- set_bednets(
   parameters = cluster_params,
   timesteps = c(data$itn_timestep_1[i], data$itn_timestep_2[i], data$itn_timestep_3[i]),
-  coverages = ,
-  retention = ,
-  dn0 = ,
-  rn = ,
-  rnm = ,
-  gamman = 
+  coverages = c(data$itn_coverage_1[i], data$itn_coverage_2[i], data$itn_coverage_3[i]),
+  retention = data$retention[i],
+  dn0 = matrix(c(dn0_1, dn0_2, dn0_3,
+                 dn0_1, dn0_2, dn0_3,
+                 dn0_1, dn0_2, dn0_3), nrow =3, ncol=3),
+  rn = matrix(c(rn0_1, rn0_2, rn0_3,
+                rn0_1, rn0_2, rn0_3,
+                rn0_1, rn0_2, rn0_3), nrow =3, ncol=3),
+  rnm = matrix(c(.24, .24, .24), nrow = 3, ncol = 3),
+  gamman = c(gamman_1, gamman_2, gamman_3)*365
+)
+ls_theta_1 = western_rural$interventions$ls_theta[16]
+ls_gamma_1 = western_rural$interventions$ls_gamma[16]
+ks_theta_1 = western_rural$interventions$ks_theta[16]
+ks_gamma_1 = western_rural$interventions$ks_gamma[16]
+ms_theta_1 = western_rural$interventions$ms_theta[16]
+ms_gamma_1 = western_rural$interventions$ms_gamma[16]
+ls_theta_2 = western_rural$interventions$ls_theta[19]
+ls_gamma_2 = western_rural$interventions$ls_gamma[19]
+ks_theta_2 = western_rural$interventions$ks_theta[19]
+ks_gamma_2 = western_rural$interventions$ks_gamma[19]
+ms_theta_2 = western_rural$interventions$ms_theta[19]
+ms_gamma_2 = western_rural$interventions$ms_gamma[19]
+ls_theta_3 = western_rural$interventions$ls_theta[22]
+ls_gamma_3 = western_rural$interventions$ls_gamma[22]
+ks_theta_3 = western_rural$interventions$ks_theta[22]
+ks_gamma_3 = western_rural$interventions$ks_gamma[22]
+ms_theta_3 = western_rural$interventions$ms_theta[22]
+ms_gamma_3 = western_rural$interventions$ms_gamma[22]
+
+cluster_params <- set_spraying(
+  parameters = cluster_params,
+  timesteps = c(data$irs_timestep_1[i], data$irs_timestep_2[i], data$irs_timestep_3[i]),
+  coverages = c(data$irs_coverage_1[i], data$irs_coverage_2[i], data$irs_coverage_3[i]),
+  ls_theta = matrix(c(ls_theta_1, ls_theta_2, ls_theta_3,
+                      ls_theta_1, ls_theta_2, ls_theta_3,
+                      ls_theta_1, ls_theta_2, ls_theta_3), nrow =3, ncol=3),
+  ls_gamma = matrix(c(ls_gamma_1, ls_gamma_2, ls_gamma_3,
+                      ls_gamma_1, ls_gamma_2, ls_gamma_3,
+                      ls_gamma_1, ls_gamma_2, ls_gamma_3), nrow =3, ncol=3),
+  ks_theta = matrix(c(ks_theta_1, ks_theta_2, ks_theta_3,
+                      ks_theta_1, ks_theta_2, ks_theta_3,
+                      ks_theta_1, ks_theta_2, ks_theta_3), nrow =3, ncol=3),
+  ks_gamma = matrix(c(ks_gamma_1, ks_gamma_2, ks_gamma_3,
+                      ks_gamma_1, ks_gamma_2, ks_gamma_3,
+                      ks_gamma_1, ks_gamma_2, ks_gamma_3), nrow =3, ncol=3),
+  ms_theta = matrix(c(ms_theta_1, ms_theta_2, ms_theta_3,
+                      ms_theta_1, ms_theta_2, ms_theta_3,
+                      ms_theta_1, ms_theta_2, ms_theta_3), nrow =3, ncol=3),
+  ms_gamma = matrix(c(ms_gamma_1, ms_gamma_2, ms_gamma_3,
+                      ms_gamma_1, ms_gamma_2, ms_gamma_3,
+                      ms_gamma_1, ms_gamma_2, ms_gamma_3), nrow =3, ncol=3)
 )
 
-out <- run_simulation(timesteps = western_rural_params$timesteps,
-                      parameters = western_rural_params)
+cluster_params$timesteps <- 10*365
+prev_at_baseline <- function(x) {
+  baseline_timestep <- data$baseline_time[i]
+  prev <- x[, "n_detect_730_3650"][baseline_timestep] / x[, "n_730_3650"][baseline_timestep]
+  return(prev)
+}
+
+set.seed(123)
+EIR <- calibrate(
+  parameters = cluster_params,
+  target = data$pfpr_baseline[i],
+  summary_function = prev_at_baseline, #using own summary function at required baseline survey timestep
+  tolerance = 0.01,
+  low = 0.001,
+  high = 350
+)
+cluster_params <- set_equilibrium(
+  parameters = cluster_params,
+  init_EIR = EIR
+)
+out <- run_simulation(timesteps = 10*365,
+                      parameters = cluster_params)
 
 par(las=1)
-plot(out$timestep/365+2017, out$n_detect_730_3649/out$n_730_3649,
+plot(out$timestep/365+2014, out$n_detect_730_3650/out$n_730_3650,
      type = "l", lwd=2, xlab="Year", ylab="PfPr2-10", frame.plot = F,
-     ylim=c(0,1), xlim=c(2017,2026))
+     ylim=c(0,1), xlim=c(2014,2024))
 grid()
-abline(v=itn_distributions/365+2017, lty=2)
+abline(v=itn_distributions/365+2015, lty=2)
+points(x= data$baseline_time[i]/365+2014, y = data$pfpr_baseline[i],
+       cex=3.5, col="mediumseagreen", pch=20)
 # stop ####
+
 
 
 
