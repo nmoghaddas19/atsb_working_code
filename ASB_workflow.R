@@ -316,7 +316,10 @@ western_rural <- single_site(zambia, 18)
 #                    mu_atsb = c(0,0,0))
 # )
 
+# starting simulation in 2016, ITN distributions in 2017 and 2020, baseline at 2023
 data <- data_frame(Cluster = 1:10, 
+                   pfpr_baseline = rnorm(10, mean=0.3, sd=0.05),
+                   baseline_time = round(rnorm(10, mean=7*365+50, sd=20), digits = 0),
                    itn_timestep_1 = rep(365-30, 10),
                    itn_coverage_1 = rep(western_rural$interventions$itn_use[18], 10),
                    resistance_1 = rep(western_rural$interventions$pyrethroid_resistance[18], 10),
@@ -332,18 +335,56 @@ data <- data_frame(Cluster = 1:10,
                    irs_coverage_2 = rep(western_rural$interventions$irs_cov[21], 10),
                    irs_timestep_3 = rep(7*365-30, 10),
                    irs_coverage_3 = rep(0.8, 10), 
+                   ft_1 = rep(western_rural$interventions$tx_cov[18], 10),
+                   prop_act_1 = rep(western_rural$interventions$prop_act[18], 10),
+                   ft_2 = rep(western_rural$interventions$tx_cov[21], 10),
+                   prop_act_2 = rep(western_rural$interventions$prop_act[21], 10),
+                   ft_3 = rep(0.65, 10),
+                   prop_act_3 = rep(0.975, 10),
                    arab = rep(western_rural$vectors$prop[1], 10),
                    fun = rep(western_rural$vectors$prop[2], 10),
-                   gamb = rep(western_rural$vectors$prop[3], 10)
+                   gamb = rep(western_rural$vectors$prop[3], 10),
+                   g0 = rep(western_rural$seasonality$g0, 10),
+                   g1 = rep(western_rural$seasonality$g1, 10),
+                   g2 = rep(western_rural$seasonality$g2, 10),
+                   g3 = rep(western_rural$seasonality$g3, 10),
+                   h1 = rep(western_rural$seasonality$h1, 10),
+                   h2 = rep(western_rural$seasonality$h2, 10),
+                   h3 = rep(western_rural$seasonality$h3, 10)
+                   
                    )
 
-itn_distributions <- c(365-30, 4*365-30, 7*365-30)
-irs_campaigns <- c(365-30, 4*365, 7*365-30)
-itn_coverages <- c(western_rural$interventions$itn_use[c(18,21)], 0.57)
-irs_coverages <- c(western_rural$interventions$irs_cov[c(18,21)], 0.80)
-resistance <- c(western_rural$interventions$pyrethroid_resistance)
+cluster_params <- get_parameters(list(
+  human_population = 10000,
+  model_seasonality = TRUE,
+  g0 = data$g0[i],
+  g = c(data$g1[i], data$g2[i], data$g3[i]),
+  h = c(data$h1[i], data$h2[i], data$h3[i]),
+  individual_mosquitoes = FALSE
+))
 
+cluster_params <- set_species(parameters = cluster_params,
+                              species = list(arab_params, fun_params, gamb_params),
+                              proportions = c(data$arab[i], data$fun[i], data$gamb[i]))
 
+cluster_params <- set_drugs(parameters = cluster_params, drugs = list(AL_params))
+cluster_params <- set_clinical_treatment(parameters = cluster_params,
+                                         drug = 1,
+                                         timesteps = c(0,3,6)*365,
+                                         coverages = c(data$ft_1[i]*data$prop_act_1[i],
+                                                       data$ft_2[i]*data$prop_act_2[i],
+                                                       data$ft_3[i]*data$prop_act_3[i]))
+
+cluster_params <- set_bednets(
+  parameters = cluster_params,
+  timesteps = c(data$itn_timestep_1[i], data$itn_timestep_2[i], data$itn_timestep_3[i]),
+  coverages = ,
+  retention = ,
+  dn0 = ,
+  rn = ,
+  rnm = ,
+  gamman = 
+)
 
 out <- run_simulation(timesteps = western_rural_params$timesteps,
                       parameters = western_rural_params)
