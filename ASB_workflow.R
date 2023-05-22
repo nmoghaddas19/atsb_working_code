@@ -20,6 +20,8 @@ library(lme4)
 library(dplyr)
 library(cali)
 library(umbrella)
+library(netz)
+library(ggplot2)
 
 # functions
 jensen.logit.adjust <-
@@ -363,8 +365,42 @@ data <- data_frame(Cluster = 1:10,
                    h1 = rep(western_rural$seasonality$h1, 10),
                    h2 = rep(western_rural$seasonality$h2, 10),
                    h3 = rep(western_rural$seasonality$h3, 10)
-                   
                    )
+# Target usage associated time points
+target <- c(data$itn_coverage_1[i], data$itn_coverage_2[i], data$itn_coverage_3[i])
+target_tt <- c(data$itn_timestep_1[i], data$itn_timestep_2[i], data$itn_timestep_3[i])
+# Time points at which distribution will occur
+distribution_tt <- c(data$itn_timestep_1[i], 
+                     data$itn_timestep_2[i]-365, 
+                     data$itn_timestep_3[i]-365)
+# Target usage associated time points
+target <- c(0.5, 0.5, 0.5)
+target_tt <- c(1*365, 4*365, 7*365)
+# Time points at which distribution will occur
+distribution_tt <- c(1*365, 4*365, 7*365)
+# Fit
+fit <- fit_usage(target_usage = target, target_usage_timesteps = target_tt,
+                 distribution_timesteps = distribution_tt, half_life = 3*365)
+data$itn_coverage_1[i] <- fit$par[1]
+data$itn_coverage_2[i] <- fit$par[2]
+data$itn_coverage_3[i] <- fit$par[3]
+# timesteps <- 10*365
+# net_hl <- 3*365
+# pu <- population_usage(
+#   timesteps = timesteps,
+#   distribution = fit$par,
+#   distribution_timesteps = distribution_tt,
+#   half_life = net_hl)
+# 
+# pd <- data.frame(t = 1:timesteps, usage = pu)
+# pd2 <- data.frame(target = target, target_tt = target_tt)
+# 
+# ggplot() +
+#   geom_line(data = pd, aes(x = t, y = usage)) +
+#   geom_point(dat = pd2, aes(x = target_tt, y = target), col = "cornflowerblue", size = 3) +
+#   ylim(0, 1) +
+#   theme_bw()
+
 
 cluster_params <- get_parameters(list(
   human_population = 10000,
@@ -374,7 +410,14 @@ cluster_params <- get_parameters(list(
   h = c(data$h1[i], data$h2[i], data$h3[i]),
   individual_mosquitoes = FALSE
 ))
-
+cluster_params <- get_parameters(list(
+  human_population = 10000,
+  model_seasonality = TRUE,
+  g0 = fit1$coefficients[1],
+  g = c(fit1$coefficients[2], fit1$coefficients[3], fit1$coefficients[4]),
+  h = c(fit1$coefficients[5], fit1$coefficients[6], fit1$coefficients[7]),
+  individual_mosquitoes = FALSE
+))
 cluster_params <- set_species(parameters = cluster_params,
                               species = list(arab_params, fun_params, gamb_params),
                               proportions = c(data$arab[i], data$fun[i], data$gamb[i]))
@@ -472,19 +515,35 @@ EIR <- calibrate(
 )
 cluster_params <- set_equilibrium(
   parameters = cluster_params,
-  init_EIR = EIR
+  init_EIR = 64
 )
 out <- run_simulation(timesteps = 10*365,
                       parameters = cluster_params)
 
 par(las=1)
 plot(out$timestep/365+2014, out$n_detect_730_3650/out$n_730_3650,
-     type = "l", lwd=2, xlab="Year", ylab="PfPr2-10", frame.plot = F,
-     ylim=c(0,1), xlim=c(2014,2024))
+     type = "l", lwd=4, xlab="Year", ylab="PfPr2-10", frame.plot = F,
+     ylim=c(0,1), xlim=c(2020,2024), col="deeppink")
+lines(out$timestep/365+2014, out$n_detect_730_3650/out$n_730_3650,
+      type = "l", lwd=4, col = "mediumseagreen")
 grid()
-abline(v=itn_distributions/365+2015, lty=2)
+legend("topright", legend = c("Fitted to rainfall", "Fitted to mosquito catch"), 
+       col = c("mediumseagreen", "deeppink"), lwd=4, bty="n")
+itn_distributions <- c(data$itn_timestep_1[i], data$itn_timestep_2[i], data$itn_timestep_3[i])
+abline(v=itn_distributions/365+2014, lty=2)
 points(x= data$baseline_time[i]/365+2014, y = data$pfpr_baseline[i],
        cex=3.5, col="mediumseagreen", pch=20)
+plot(out$timestep/365+2014, out$total_M_arab+out$total_M_fun+out$total_M_gamb,
+     type = "l", lwd=4, xlab="Year", ylab="Count", frame.plot = F,
+     xlim=c(2020,2024), col="deeppink")
+lines(out$timestep/365+2014, out$total_M_arab+out$total_M_fun+out$total_M_gamb,
+      type = "l", lwd=4, col="mediumseagreen")
+lines(out$timestep/365+2014, out$total_M_arab+out$total_M_fun+out$total_M_gamb,
+      type = "l", lwd=4, col="sienna1")
+grid()
+legend("topright", 
+       legend = c("Fitted to rainfall", "Fitted to catch: gambiae", "Fitted to catch: funestus"), 
+       col = c("mediumseagreen", "deeppink", "sienna1"), lwd=4, bty="n")
 # stop ####
 
 
