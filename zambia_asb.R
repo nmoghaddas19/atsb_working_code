@@ -332,5 +332,13 @@ arrows(x0 = c(0,1,3),
        angle=90,
        length=0.1)
 
-                        
-                              
+sugar_feeding <- read.csv("atsb_working_code/DB monthly natural sugar and ASB feeding/day 2-Table 1.csv")
+sugar_feeding <- sugar_feeding[-(64:65),] # final two rows are NAs so removing them   
+par(las=1)
+plot.default(sugar_feeding$month*30+sugar_feeding$Day, 
+             sugar_feeding$females.ASB.positive/sugar_feeding$TOTAL.Sample.females.Day.2,
+             cex=1.1, pch=20, frame.plot = F, xlab = "Day", ylab = "% bait fed",
+             ylim = c(0,1), cex.axis=1.2, xlim = c(1,365))
+grid()
+
+
