@@ -332,13 +332,54 @@ arrows(x0 = c(0,1,3),
        angle=90,
        length=0.1)
 
+library(lme4)
+par(mfrow=c(1,1))
 sugar_feeding <- read.csv("atsb_working_code/DB monthly natural sugar and ASB feeding/day 2-Table 1.csv")
 sugar_feeding <- sugar_feeding[-(64:65),] # final two rows are NAs so removing them   
 par(las=1)
-plot.default(sugar_feeding$month*30+sugar_feeding$Day, 
-             sugar_feeding$females.ASB.positive/sugar_feeding$TOTAL.Sample.females.Day.2,
+sugar_feeding$dyed_fraction <- sugar_feeding$females.ASB.positive/sugar_feeding$TOTAL.Sample.females.Day.2
+sugar_feeding$days <- (sugar_feeding$month-1)*30+sugar_feeding$Day
+plot.default(sugar_feeding$days, 
+             sugar_feeding$dyed_fraction,
              cex=1.1, pch=20, frame.plot = F, xlab = "Day", ylab = "% bait fed",
              ylim = c(0,1), cex.axis=1.2, xlim = c(1,365))
 grid()
 
+# We are interested to know whether feeding rates change over time which would
+# provide reason for including a time varying feeding rate in the final 
+# simulations. 
+# FIRST APPROACH: Fit a glmm with random effects on cluster and date. If the 
+# random effect for date is greater than cluster, this provides evidence that 
+# there is variation in feeding rates over time over and above the variation
+# between clusters
 
+# SECOND APPROACH: Fit a glmm with a fixed effect on date. If there is a 
+# significant effect of date, this provides evidence that the feeding rate is
+# changing over time
+
+
+fit <-
+  glmer(
+    cbind(total_sampled, total_sampled - total_asb_positive) ~ 
+      Village + (1|days),
+    family = "binomial", data = sugar_feeding,
+    control = glmerControl(optimizer = "bobyqa"))
+summary(fit)
+
+sp <- c("funestus")
+dat <- droplevels(dat.all[dat.all$mosquito_species  %in% sp, ])
+term <- "cluster"
+rest.of.formula <- "positive ~ (1 | collection_date) + (1|hh)"
+form <- paste(rest.of.formula, term, sep = " + ")  
+
+
+fit <- glmer(positive ~ (1|collection_date) + (1|cluster),
+             family = "binomial", data = dat.all, 
+             control = glmerControl(optimizer = "bobyqa"))
+print(summary(fit))
+
+fit <- glmer(
+  positive ~ (1|cluster) + (1|days),
+  data = zambia, family = "binomial", control = glmerControl(optimizer = "bobyqa")
+)
+summary(fit)

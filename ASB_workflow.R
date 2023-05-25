@@ -103,6 +103,7 @@ dat.all$positive <- dat.all$form.dyefed
 dat.all$form.dyefed <- NULL
 dat.all$cluster.day <- factor(paste(dat.all$cluster, dat.all$date.id, sep = ":"))
 
+
 # stop ####
 
 # fit regression model for each species 
