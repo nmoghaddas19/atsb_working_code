@@ -14,6 +14,7 @@ library(lubridate)
 library(RColorBrewer)
 library(tibble)
 library(DescTools)
+library(umbrella)
 ```
 
 The purpose of this document is to explore whether cluster level feeding rates can be used to predict entomological outcomes in the same cluster in the following year. This adds justification to the proposal to measure feeding rates in ATSB clusters in the ongoing ATSB trials. The only study in which feeding rates were measured in the same clusters as ATSB was deployed was the original proof of concept trial in Mali undertaken in 2016-2017. This was a purely entomological trial so no epidemiological measurements were taken.
@@ -167,8 +168,7 @@ title(this_village)
 
 ```{r, message=F, warning=F, fig.width=12, fig.height=5, echo=F}
 asb_feeding <- data_frame(
-  village = c("Sirakele", "Farabale", "Tiko", "Sambadani", "Krekrelo", 
-              "Trekrou", "Kignele"),
+  village = c("Sirakele", "Farabale", "Tiko", "Sambadani", "Krekrelo", "Trekrou", "Kignele"),
   date = c("06-10-2016", "08-10-2016", "19-08-2016", "26-08-2016", "09-09-2016", "20-09-2016", NA),
   total_catch = c(192, 87, 329, 216, 151, 181, NA),
   total_asb_positive = c(25+33, 33, 114, 69, 70, 69, NA)

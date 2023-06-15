@@ -1,0 +1,187 @@
+---
+title: "ATSB modelling framework"
+author: "Nima Moghaddas"
+output: html_document
+date: "2023-06-06"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(lme4)
+library(malariasimulation)
+library(lubridate)
+library(RColorBrewer)
+
+jensen.logit.adjust <-
+  function(p, V, method = "mcculloch", inverse = FALSE) {
+    if(method == "mcculloch" & inverse) {
+      method <- "zeger"
+      warning("The McCulloch method can't be used when inverse = TRUE. Changing to Zeger.")
+    }
+    stopifnot(!(method == "mcculloch" & inverse))
+    Beta <- qlogis(p)
+    if(method == "mcculloch") {
+      return(plogis(Beta - 0.5 * V * tanh(Beta * (1 + 2 * exp(-0.5 * V))/6)))
+    }
+    if(method == "zeger") {
+      if (inverse) {
+        plogis(Beta * sqrt(256 * V / (75 * pi^2) + 1))
+      } else {
+        plogis(Beta/sqrt(1 + ((16 * sqrt(3))/(15 * pi))^2 * V))
+      }
+    }
+  }
+```
+
+## What are we trying to do?
+
+The ATSB trials currently underway are assessing the efficacy of ATSB as an intervention against malaria. We would like to develop a modelling framework to estimate the impact of ATSB based on the available baseline data from the trials. These estimates could be validated against data collected during the trial to assess the success of the model. We want to use the ASB dyed fraction estimates.
+
+```{r, fig.width = 10, fig.height = 5, message=F}
+mali <- read.csv("~/Documents/GitHub/atsb_working_code/DB monthly natural sugar and ASB feeding/day 2-Table 1.csv")[-(64:65),]
+mali$dyed_fraction <- mali$females.ASB.positive/mali$TOTAL.Sample.females.Day.2
+mali$total_asb_positive <- mali$females.ASB.positive 
+mali$total_sampled <- mali$TOTAL.Sample.females.Day.2 
+mali$days <- (mali$month-1)*30+mali$Day
+zambia <- read.csv("~/Documents/GitHub/zambia_feeding_data")
+zambia$days <- (month(zambia$collection_date)-1)*30 + day(zambia$collection_date)
+par(las=1)
+zambia |> 
+  group_by(collection_date, cluster) |>
+  summarise(dyed_fraction = sum(positive)/n()) -> zambia_grouped
+zambia_grouped$days <- (month(zambia_grouped$collection_date)-1)*30 + day(zambia_grouped$collection_date)
+plot(zambia_grouped$days,
+     zambia_grouped$dyed_fraction,
+     cex=1.1, pch=20, frame.plot = F, xlab = "Day", ylab = "% bait fed",
+     ylim = c(0,1), cex.axis=1.2, xlim = c(1,365))
+grid()
+title("Zambia 2021")
+```
+
+As can be seen, data is only available for a fraction of the year, roughly three months, and there is substantial variability in the data, with a range of dyed fractions from 0 to 100% on different days in different clusters. At what level to characterise the dyed fraction is an important question. The ATSB trials are intended to run for two years, so another question is how we will extrapolate this limited data. I will attempt a framework that follows the following steps:
+
+1.  Characterise a time constant dyed fraction at the cluster level
+
+2.  Characterise a time variable dyed fraction at the cluster level
+
+3.  Convert dyed fraction into daily feeding rate
+
+4.  Prepare model with site specific parameters
+
+5.  Generate predictions of the impact of ATSB
+
+6.  Compare predictions to trial data
+
+## Step 1
+
+To generate time constant dyed fraction estimates for each cluster we can run a binomial regression on dye positivity for each species with fixed effects for cluster.
+
+```{r, fig.width = 10, fig.height = 4}
+zambia$mosquito_species <- factor(zambia$mosquito_species)
+funestus <- filter(zambia, mosquito_species == 'funestus')
+fit1 <- glmer(
+  positive ~ cluster + (1|days) - 1,
+  data = funestus, family = "binomial", control = glmerControl(optimizer = "bobyqa")
+)
+funestus_dyed_fraction <- cbind(plogis(fixef(fit1)), 
+                        plogis(fixef(fit1)-1.96*summary(fit1)$coefficients[,2]),
+                        plogis(fixef(fit1)+1.96*summary(fit1)$coefficients[,2]))
+funestus_dyed_fraction <- jensen.logit.adjust(p = funestus_dyed_fraction, V = sum(unlist(VarCorr(fit1))))     
+gambiae <- filter(zambia, mosquito_species == 'gambiae')
+fit2 <- glmer(
+  positive ~ cluster + (1|days) - 1,
+  data = gambiae, family = "binomial", control = glmerControl(optimizer = "bobyqa")
+)
+gambiae_dyed_fraction <- cbind(plogis(fixef(fit2)), 
+                        plogis(fixef(fit2)-1.96*summary(fit2)$coefficients[,2]),
+                        plogis(fixef(fit2)+1.96*summary(fit2)$coefficients[,2]))
+gambiae_dyed_fraction <- jensen.logit.adjust(p = gambiae_dyed_fraction, V = sum(unlist(VarCorr(fit1))))   
+colnames(gambiae_dyed_fraction) <- colnames(funestus_dyed_fraction) <- c("Mean", "2.5%", "97.5%")  
+round(cbind(funestus_dyed_fraction, gambiae_dyed_fraction), digits = 3)
+
+# Visualise
+funestus |>
+  group_by(cluster) |>
+  summarise(positive = mean(positive), count=n()) -> zambia_grouped
+par(las=2, mfrow=c(1,2))
+plot(zambia_grouped$positive,
+     col=brewer.pal(10,"Set3")[factor(zambia_grouped$cluster)],
+     cex=2*zambia_grouped$count/mean(zambia_grouped$count),
+     frame.plot = F,
+     ylim = c(0,0.5),
+     ylab = "Dyed fraction",
+     xaxt = "n",
+     xlab = "")
+axis(1, at=1:10, labels=unique(zambia_grouped$cluster))
+grid()
+arrows(1:10+0.15,
+       funestus_dyed_fraction[,2],
+       1:10+0.15,
+       funestus_dyed_fraction[,3],
+       code=0,
+       lwd=2)
+title("An. funestus by cluster")
+
+gambiae |>
+  group_by(cluster) |>
+  summarise(positive = mean(positive), count=n()) -> zambia_grouped
+plot(zambia_grouped$positive,
+     col=brewer.pal(10,"Set3")[factor(zambia_grouped$cluster)],
+     cex=2*zambia_grouped$count/mean(zambia_grouped$count),
+     frame.plot = F,
+     ylim = c(0,0.5),
+     ylab = "Dyed fraction",
+     xaxt = "n",
+     xlab = "")
+axis(1, at=1:10, labels=unique(zambia_grouped$cluster))
+grid()
+arrows(1:10+0.15,
+       gambiae_dyed_fraction[,2],
+       1:10+0.15,
+       gambiae_dyed_fraction[,3],
+       code=0,
+       lwd=2)
+title("An. gambiae by cluster")
+```
+
+## Step 2
+
+To generate time varying dyed fraction estimates for each cluster we can run a binomial regression on dye positivity for each species with fixed effects for cluster and month.
+
+```{r}
+funestus$month_caught <- factor(funestus$month_caught)
+fit3 <- glmer(
+  positive ~ cluster + month_caught + (1|days),
+  data = funestus, family = "binomial", control = glmerControl(optimizer = "bobyqa")
+)
+summary(fit3)
+plogis(fixef(fit3))[1:10]
+plogis(fixef(fit3)[1:10]+fixef(fit3)[11])
+```
+
+## Step 3
+
+To convert dyed fractions to daily feeding rates we can use this model generated relationship. It defines what daily feeding rate is required to produce the dyed fraction observed on a given day given a certain background ITN coverage, pyrethroid resistance, dye longevity and dye mortality.
+
+```{r}
+dyed_fraction <- read.csv("~/Documents/GitHub/atsb_working_code/dyed_fraction.csv")[1:200,]
+par(las=1)
+plot(NA, ylim=c(0,0.7), xlim=c(0,0.5), frame.plot=F, ylab = "Dyed fraction", 
+     xlab = "Daily feeding rate")
+grid()
+for (i in 1:nrow(dyed_fraction)) {
+  lines(seq(0.01,0.5,0.02), dyed_fraction[i,7:31], 
+        col=adjustcolor(col="mediumseagreen", alpha.f = 0.4))
+}
+abline(h = 0.2, lty="dashed")
+
+```
+
+## Step 4
+
+The impact of ATSB will depend on a variety of cluster specific variables other than the feeding rate, that the model can account for, such as background interventions and coverage over time, pyrethroid resistance, vector proportions, and seasonal dynamics.
+
+## Step 5
+
+We use the daily feeding rate estimates to predict the impact of ATSB by first calibrating to malaria prevalence at baseline and then projecting forwards. We then hope to validate our predictions against the trial data.
