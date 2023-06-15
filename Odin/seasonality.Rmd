@@ -1,0 +1,137 @@
+---
+title: "Comparing seasonality and mosquito profiles"
+author: "Nima Moghaddas"
+output: html_document
+date: "2023-06-05"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message=F, warning=F}
+library(ICDMM)
+library(malariasimulation)
+library(umbrella)
+library(dplyr)
+library(RColorBrewer)
+library(site)
+library(foresite)
+library(DescTools)
+seasonality_data <- ICDMM::load_file("admin_units_seasonal.rds")
+```
+
+```{r}
+out <- run_model(model = "odin_model_asb",
+               init_EIR = 50,
+               time = 1000,
+               asb_on = 345+60,
+               asb_off = 345+60+90,
+               feeding_rate = 0.00,
+               u_asb = 0.0,
+               country = "Zambia",
+               admin2 = "Western",
+               dye_days = 1/7,
+               ITN_IRS_on = 365,
+               itn_cov = 0.0,
+               num_int = 2)
+
+zmb <- ZMB
+western_rural <- single_site(zmb, 18)
+p <- as.numeric(western_rural$seasonality[5:11])
+predict <- fourier_predict(coef = p, t = 1:365, floor=0.001)
+fourier_area <- AUC(x = predict$t, y = predict$profile, from = 1, to = 365)
+mosquito_area <- AUC(x = out$t, y = out$mv, from = 1, to = 365)
+scaler <- mosquito_area/fourier_area
+plot(predict$t, predict$profile*scaler, type = "l", col="mediumseagreen", lwd=4, frame.plot=F)
+lines(out$t[3660:7300]-365, out$mv[3660:7300], lwd=4, col = "deeppink")
+legend("topright", legend = c("Rainfall input", "Mosquito output"), 
+       col = c("mediumseagreen", "deeppink"), lwd=4, bty="n")
+grid()
+
+
+```
+
+```{r, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 15}
+par(las=1, mfrow = c(5,2))
+for (i in 1:length(unique(zmb$sites$name_1))) {
+    out <- run_model(model = "odin_model_asb",
+                 init_EIR = 50,
+                 time = 1000,
+                 asb_on = 345+60,
+                 asb_off = 345+60+90,
+                 feeding_rate = 0.00,
+                 u_asb = 0.0,
+                 country = "Zambia",
+                 admin2 = unique(zmb$sites$name_1)[i],
+                 dye_days = 1/7,
+                 ITN_IRS_on = 365,
+                 itn_cov = 0.0,
+                 num_int = 2)
+    site_p <- single_site(zmb, index = i*2-1)
+    p <- as.numeric(site_p$seasonality[5:11])
+    predict <- fourier_predict(coef = p, t = 1:365, floor=0.001)
+    fourier_area <- AUC(x = predict$t, y = predict$profile, from = 1, to = 365)
+    mosquito_area <- AUC(x = out$t, y = out$mv, from = 366, to = 730)
+    scaler <- mosquito_area/fourier_area
+    plot(predict$t, predict$profile*scaler, type = "l", col="mediumseagreen", lwd=4, frame.plot=F, xlab = "Day", ylab = "Count")
+    lines(out$t[3660:7300]-365, out$mv[3660:7300], lwd=4, col = "deeppink")
+    legend("topright", legend = c("Rainfall input", "Mosquito output"), 
+       col = c("mediumseagreen", "deeppink"), lwd=4, bty="n")
+    grid()
+    title(unique(zmb$sites$name_1)[i])
+}
+```
+
+```{r, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 15}
+par(las=1, mfrow = c(5,2))
+for (i in 1:length(unique(zmb$sites$name_1))) {
+    site_p <- single_site(zmb, index = i*2-1)
+    p <- as.numeric(site_p$seasonality[5:11])
+    pars <- get_parameters(list(
+      human_population = 10000,
+      model_seasonality = TRUE,
+      g0 = p[1],
+      g = c(p[2], p[3], p[4]),
+      h = c(p[5], p[6], p[7]),
+      individual_mosquitoes = FALSE
+    ))
+    out <- run_simulation(timesteps = 731,
+                          parameters = pars)
+    predict <- fourier_predict(coef = p, t = 1:365, floor=0.001)
+    fourier_area <- AUC(x = predict$t, y = predict$profile, from = 1, to = 365)
+    mosquito_area <- AUC(x = out$timestep, y = out$total_M_All, from = 366, to = 730)
+    scaler <- mosquito_area/fourier_area
+    plot(predict$t, predict$profile*scaler, type = "l", col="mediumseagreen", lwd=4, frame.plot=F, xlab = "Day", ylab = "Count")
+    lines(out$timestep[366:730]-365, out$total_M_All[366:730], lwd=4, col = "deeppink")
+    legend("topright", legend = c("Rainfall input", "Mosquito output"),
+       col = c("mediumseagreen", "deeppink"), lwd=4, bty="n")
+    grid()
+    title(unique(zmb$sites$name_1)[i])
+}
+```
+
+```{r}
+# p <- as.numeric(western_rural$seasonality[5:11])
+# predict <- fourier_predict(coef = p, t = 1:365, floor=0.001)
+# 
+# p2 <- c(zambia_seasonality_data[10,4],
+#         zambia_seasonality_data[10,6],
+#         zambia_seasonality_data[10,8],
+#         zambia_seasonality_data[10,10],
+#         zambia_seasonality_data[10,5],
+#         zambia_seasonality_data[10,7],
+#         zambia_seasonality_data[10,9])
+# p2 <- c(zambia_seasonality_data[10,4],
+#         zambia_seasonality_data[10,5],
+#         zambia_seasonality_data[10,6],
+#         zambia_seasonality_data[10,7],
+#         zambia_seasonality_data[10,8],
+#         zambia_seasonality_data[10,9],
+#         zambia_seasonality_data[10,10])
+# predict <- fourier_predict(coef = p, t = 1:365, floor=0.001)
+# predict_2 <- fourier_predict(coef = p2, t = 1:365, floor=0.001)
+# plot(predict$t, predict$profile*scaler, type = "l", col="mediumseagreen", lwd=4, frame.plot=F)
+# plot(predict_2$t, predict_2$profile*scaler, type = "l", col="mediumseagreen", lwd=4, frame.plot=F)
+
+```

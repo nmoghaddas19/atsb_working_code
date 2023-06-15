@@ -1,8 +1,10 @@
 ---
-title: "Feeding rate consistency"
+title: "Feeding rate variability"
 author: "Nima Moghaddas"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -13,20 +15,22 @@ knitr::opts_chunk$set(echo = TRUE)
 library(malariasimulation)
 library(lme4)
 library(dplyr)
+library(RColorBrewer)
 ```
 
-We are interested to know whether feeding rates change over time which would provide reason for including a time varying feeding rate in the final simulations. One way to do this is to fit a generalised linear mixed effects models with a random effect on cluster/village and a random effect on date.If the random effect for date is greater than cluster, this provides evidence that there is variation in feeding rates over time over and above the variation between clusters. Here is the cluster level feeding rate data for Zambia and Mali.
+We are interested to understand the variability in feeding rates over time, cluster and mosquito species. This will inform the level at which we include feeding rate in the final simulations. One way to do this is to compare fits for generalised linear mixed effects models with different fixed effects to understand which covariates significantly improve the model. Then we can include different random effects to understand what fraction of the variability is explained by each. First let's look at the cluster level dyed fraction data for Zambia and Mali.
 
 ```{r, include=FALSE}
 library(lubridate)
-mali <- read.csv("~/GitHub/atsb_working_code/DB monthly natural sugar and ASB feeding/day 2-Table 1.csv")[-(64:65),]
+mali <- read.csv("~/Documents/GitHub/atsb_working_code/DB monthly natural sugar and ASB feeding/day 2-Table 1.csv")[-(64:65),]
 mali$dyed_fraction <- mali$females.ASB.positive/mali$TOTAL.Sample.females.Day.2
 mali$total_asb_positive <- mali$females.ASB.positive 
 mali$total_sampled <- mali$TOTAL.Sample.females.Day.2 
 mali$days <- (mali$month-1)*30+mali$Day
-zambia <- read.csv("~/GitHub/zambia_feeding_data")
+zambia <- read.csv("~/Documents/GitHub/zambia_feeding_data")
 zambia$days <- (month(zambia$collection_date)-1)*30 + day(zambia$collection_date)
 ```
+
 ```{r, fig.width = 10, fig.height = 4, message=F}
 par(las=1, mfrow=c(1,2))
 # The Zambia trial has data for every mosquito caught so first we need to summarise across cluster and date
@@ -50,29 +54,278 @@ title("Mali 2017")
 
 ```
 
-We can fit a GLMM with random effects on cluster and day.
+As you can see, data was collected much more frequently in Zambia than Mali. In fact the Zambia data has information about every mosquito that was caught and whether it was bait fed. Whereas the Mali data only contains summary data for the total number of mosquitoes that were bait fed out of the total sample that was tested. However, the Mali data was collected over a longer period.
 
-```{r}
-fit <- glmer(
-  positive ~ (1|cluster) + (1|days),
+Lets look at the data grouped by cluster averaged over different time periods.
+
+```{r, fig.width = 10, fig.height = 12, message=FALSE, echo = FALSE}
+par(las=1,mfcol=c(3,2))
+zambia |>
+  filter(mosquito_species=="funestus") |>
+  group_by(cluster, month_caught) |>
+  summarise(positive = mean(positive), count=n()) -> zambia_grouped
+plot(zambia_grouped$month_caught,
+     zambia_grouped$positive,
+     pch=1,
+     cex=zambia_grouped$count/mean(zambia_grouped$count),
+     ylim=c(0,1),
+     ylab="Dyed fraction",
+     xlab="Month",
+     frame.plot = F,
+     col=brewer.pal(10,"Set3")[factor(zambia_grouped$cluster)])
+grid()
+zambia_grouped |>
+  group_by(month_caught) |>
+  summarise(mean=mean(positive), 
+            lower=mean(positive)+sd(positive)*-1.96/sqrt(10),
+            upper=mean(positive)+sd(positive)*1.96/sqrt(10)) -> zambia_summary
+arrows(zambia_summary$month_caught+0.05,
+       zambia_summary$lower,
+       zambia_summary$month_caught+0.05,
+       zambia_summary$upper,
+       code=0,
+       lwd=2)
+title("An. funestus monthly")
+
+# create variable for half month time periods
+zambia$half_month <- ceiling((zambia$days-60)/15)
+zambia |>
+  filter(mosquito_species=="funestus") |>
+  group_by(cluster, half_month) |>
+  summarise(positive = mean(positive), count=n()) -> zambia_grouped
+plot(zambia_grouped$half_month,
+     zambia_grouped$positive,
+     pch=1,
+     cex=zambia_grouped$count/mean(zambia_grouped$count),
+     ylim=c(0,1),
+     ylab="Dyed fraction",
+     xlab="Fortnight",
+     frame.plot = F,
+     col=brewer.pal(10,"Set3")[factor(zambia_grouped$cluster)])
+grid()
+zambia_grouped |>
+  group_by(half_month) |>
+  summarise(mean=mean(positive), 
+            lower=mean(positive)+sd(positive)*-1.96/sqrt(10),
+            upper=mean(positive)+sd(positive)*1.96/sqrt(10)) -> zambia_summary
+arrows(zambia_summary$half_month+0.1,
+       zambia_summary$lower,
+       zambia_summary$half_month+0.1,
+       zambia_summary$upper,
+       code=0,
+       lwd=2)
+title("An. funestus biweekly")
+# create variable for weekly time periods
+zambia$week <- ceiling((zambia$days-60.9)/7)
+zambia |>
+  filter(mosquito_species=="funestus") |>
+  group_by(cluster, week) |>
+  summarise(positive = mean(positive), count=n()) -> zambia_grouped
+plot(zambia_grouped$week,
+     zambia_grouped$positive,
+     pch=1,
+     cex=zambia_grouped$count/mean(zambia_grouped$count),
+     ylim=c(0,1),
+     xlim=c(0,14),
+     xlab="Week",
+     ylab="Dyed fraction",
+     frame.plot = F,
+     col=brewer.pal(10,"Set3")[factor(zambia_grouped$cluster)])
+grid()
+zambia_grouped |>
+  group_by(week) |>
+  summarise(mean=mean(positive), 
+            lower=mean(positive)+sd(positive)*-1.96/sqrt(10),
+            upper=mean(positive)+sd(positive)*1.96/sqrt(10)) -> zambia_summary
+arrows(zambia_summary$week+0.3,
+       zambia_summary$lower,
+       zambia_summary$week+0.3,
+       zambia_summary$upper,
+       code=0,
+       lwd=2)
+title("An. funestus weekly")
+
+# Repeat for An. gambiae
+zambia |>
+  filter(mosquito_species=="gambiae") |>
+  group_by(cluster, month_caught) |>
+  summarise(positive = mean(positive), count=n()) -> zambia_grouped
+plot(zambia_grouped$month_caught,
+     zambia_grouped$positive,
+     pch=1,
+     cex=zambia_grouped$count/mean(zambia_grouped$count),
+     ylim=c(0,1),
+     ylab="Dyed fraction",
+     xlab="Month",
+     frame.plot = F,
+     col=brewer.pal(10,"Set3")[factor(zambia_grouped$cluster)])
+grid()
+zambia_grouped |>
+  group_by(month_caught) |>
+  summarise(mean=mean(positive), 
+            lower=mean(positive)+sd(positive)*-1.96/sqrt(10),
+            upper=mean(positive)+sd(positive)*1.96/sqrt(10)) -> zambia_summary
+arrows(zambia_summary$month_caught+0.05,
+       zambia_summary$lower,
+       zambia_summary$month_caught+0.05,
+       zambia_summary$upper,
+       code=0,
+       lwd=2)
+title("An. gambiae monthly")
+
+# create variable for half month time periods
+zambia$half_month <- ceiling((zambia$days-60)/15)
+zambia |>
+  filter(mosquito_species=="gambiae") |>
+  group_by(cluster, half_month) |>
+  summarise(positive = mean(positive), count=n()) -> zambia_grouped
+plot(zambia_grouped$half_month,
+     zambia_grouped$positive,
+     pch=1,
+     cex=zambia_grouped$count/mean(zambia_grouped$count),
+     ylim=c(0,1),
+     ylab="Dyed fraction",
+     xlab="Fortnight",
+     frame.plot = F,
+     col=brewer.pal(10,"Set3")[factor(zambia_grouped$cluster)])
+grid()
+zambia_grouped |>
+  group_by(half_month) |>
+  summarise(mean=mean(positive), 
+            lower=mean(positive)+sd(positive)*-1.96/sqrt(10),
+            upper=mean(positive)+sd(positive)*1.96/sqrt(10)) -> zambia_summary
+arrows(zambia_summary$half_month+0.1,
+       zambia_summary$lower,
+       zambia_summary$half_month+0.1,
+       zambia_summary$upper,
+       code=0,
+       lwd=2)
+title("An. gambiae biweekly")
+# create variable for weekly time periods
+zambia$week <- ceiling((zambia$days-60.9)/7)
+zambia |>
+  filter(mosquito_species=="gambiae") |>
+  group_by(cluster, week) |>
+  summarise(positive = mean(positive), count=n()) -> zambia_grouped
+plot(zambia_grouped$week,
+     zambia_grouped$positive,
+     pch=1,
+     cex=zambia_grouped$count/mean(zambia_grouped$count),
+     ylim=c(0,1),
+     xlim=c(0,14),
+     xlab="Week",
+     ylab="Dyed fraction",
+     frame.plot = F,
+     col=brewer.pal(10,"Set3")[factor(zambia_grouped$cluster)])
+grid()
+zambia_grouped |>
+  group_by(week) |>
+  summarise(mean=mean(positive), 
+            lower=mean(positive)+sd(positive)*-1.96/sqrt(10),
+            upper=mean(positive)+sd(positive)*1.96/sqrt(10)) -> zambia_summary
+arrows(zambia_summary$week+0.3,
+       zambia_summary$lower,
+       zambia_summary$week+0.3,
+       zambia_summary$upper,
+       code=0,
+       lwd=2)
+title("An. gambiae weekly")
+```
+
+Clearly, there is variability from week to week and month to month. But also there is considerable variability between clusters at the same timepoint. It may therefore be worth estimating feeding rates at the level of the cluster.
+
+We want to obtain cluster level estimates for the feeding rate at different time points throughout the season and their associated uncertainties. Firstly let's see if including cluster as a fixed effect is justified. Here we use the drop1 function which tests the significance of removing each of the fixed effects from the model in one go.
+
+```{r, message = FALSE, warning = FALSE}
+zambia$month_caught <- factor(zambia$month_caught)
+zambia$half_month <- factor(zambia$half_month)
+zambia$week <- factor(zambia$week)
+zambia$mosquito_species <- factor(zambia$mosquito_species)
+fit1 <- glmer(
+  positive ~ cluster + month_caught + mosquito_species + (1|days),
   data = zambia, family = "binomial", control = glmerControl(optimizer = "bobyqa")
 )
-summary(fit)
+fit2 <- glmer(
+  positive ~ cluster + half_month + mosquito_species + (1|days),
+  data = zambia, family = "binomial", control = glmerControl(optimizer = "bobyqa")
+)
+fit3 <- glmer(
+  positive ~ cluster + week + mosquito_species + (1|days),
+  data = zambia, family = "binomial", control = glmerControl(optimizer = "bobyqa")
+)
+
+drop1(fit1, test = "Chisq")
+drop1(fit2, test = "Chisq")
+drop1(fit3, test = "Chisq")
 ```
+
+Adding cluster significantly improved the model fit at all three levels: monthly, biweekly and weekly. As did mosquito species and the different time periods (week, fortnight and month).
+
+We can fit a GLMM with random effects on cluster and day to see what fraction of the variance is explained by cluster.
+
 ```{r}
-# mali$Village <- factor(mali$Village)
-# form <- "dyed_fraction ~ (1|Village) + (1|days)"
-# fit <-
-#   glmer(
-#     cbind(total_sampled, 1 - total_asb_positive) ~ 
-#       (1|Village) + (1|days),
-#     family = "binomial", data = mali,
-#     control = glmerControl(optimizer = "bobyqa"))
-# fit <-
-#   glmer(
-#   cbind(tot_dead, total - tot_dead) ~
-#     treatment + (1 | hut) + (1 | sleeper) + (1 | observation),
-#     family = binomial, data = df)
+fit4 <- glmer(
+  positive ~ mosquito_species + (1|cluster) + (1|days),
+  data = zambia, family = "binomial", control = glmerControl(optimizer = "bobyqa")
+)
+fit5 <- glmer(
+  positive ~ mosquito_species + (1|cluster) + (1|week),
+  data = zambia, family = "binomial", control = glmerControl(optimizer = "bobyqa")
+)
+fit6 <- glmer(
+  positive ~ mosquito_species + (1|cluster) + (1|half_month),
+  data = zambia, family = "binomial", control = glmerControl(optimizer = "bobyqa")
+)
+VarCorr(fit4)
+VarCorr(fit5)
+VarCorr(fit6)
 ```
 
+```{r, message = FALSE}
+fit4 <- glmer(
+  positive ~ (1|cluster) + month_caught + mosquito_species + (1|days),
+  data = zambia, family = "binomial", control = glmerControl(optimizer = "bobyqa")
+)
+fit5 <- glmer(
+  positive ~ (1|cluster) + half_month + mosquito_species + (1|days),
+  data = zambia, family = "binomial", control = glmerControl(optimizer = "bobyqa")
+)
+fit6 <- glmer(
+  positive ~ (1|cluster) + week + mosquito_species + (1|days),
+  data = zambia, family = "binomial", control = glmerControl(optimizer = "bobyqa")
+)
+VarCorr(fit4)
+VarCorr(fit5)
+VarCorr(fit6)
+```
 
+The random effect variance for days is greater than the cluster variance suggesting the bait feeding rate consistently varies more over time than between clusters.
+
+```{r}
+# fit1 <- glmer(
+#   positive ~ week + (1|days) + (1|cluster) -1,
+#   data = zambia, family = "binomial", control = glmerControl(optimizer = "bobyqa")
+# )
+# summary(fit1)
+# estimates.bias <-
+#   cbind(fixef(fit1),
+#         confint(fit1, method = "Wald")[2:23,]
+#         )
+# estimates <-
+#   jensen.logit.adjust(p = plogis(estimates.bias), V = sum(unlist(VarCorr(fit1))))
+```
+
+Here are the results for Mali.
+
+```{r}
+mali$Village <- factor(mali$Village)
+fit3 <-
+  glmer(
+    cbind(total_asb_positive, total_sampled-total_asb_positive) ~
+      (1|Village) + (1|days),
+    family = "binomial", data = mali,
+    control = glmerControl(optimizer = "bobyqa"))
+summary(fit3)
+```
+
+There is much less variance in the Mali data but still we see the variance in time is greater than the variance between villages.

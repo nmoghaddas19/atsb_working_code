@@ -44,6 +44,16 @@ jensen.logit.adjust <-
     }
   }
 
+dyed_fraction <- read.csv("~/Documents/GitHub/atsb_working_code/dyed_fraction.csv")[1:200,]
+par(las=1)
+plot(NA, ylim=c(0,0.7), xlim=c(0,0.5), frame.plot=F, ylab = "Dyed fraction", 
+     xlab = "Daily feeding rate")
+grid()
+for (i in 1:nrow(dyed_fraction)) {
+  lines(seq(0.01,0.5,0.02), dyed_fraction[i,7:31], 
+        col=adjustcolor(col="mediumseagreen", alpha.f = 0.4))
+}
+abline(h = 0.2, lty="dashed")
 # load in data
 dat.all <- read.csv("atsb_working_code/ZAM.ASB.Target Summaries.2021.10.01.clean.csv")
 # cleaning and checking ####
@@ -107,6 +117,7 @@ dat.all$cluster.day <- factor(paste(dat.all$cluster, dat.all$date.id, sep = ":")
 # stop ####
 
 # fit regression model for each species 
+levs <- levels(dat.all[, term])
 sp <- c("funestus")
 dat <- droplevels(dat.all[dat.all$mosquito_species  %in% sp, ])
 term <- "cluster"
@@ -116,10 +127,11 @@ fit <- glmer(form, family = "binomial", data = dat,
              control = glmerControl(optimizer = "bobyqa"))
 print(summary(fit))
 
-fit0 <- update(fit, ~ . -1)
+fit0 <- update(fit3, ~ . -1)
 est.tab.bias <-
   cbind(fixef(fit0),
-        confint(fit0, method = "Wald")[paste0(term, levs), ])
+        confint(fit0, method = "Wald")[paste0(term, levs), ]
+        )
 # adjust predictions for Jensen's inequality
 est.tab_fun <-
   jensen.logit.adjust(p = plogis(est.tab.bias), V = sum(unlist(VarCorr(fit0))))
@@ -136,8 +148,8 @@ print(summary(fit))
 
 fit0 <- update(fit, ~ . -1)
 est.tab.bias <-
-  cbind(fixef(fit0),
-        confint(fit0, method = "Wald")[paste0(term, levs), ])
+  cbind(fixef(fit1),
+        confint(fit1, method = "Wald"))
 # adjust predictions for Jensen's inequality
 est.tab_gamb <-
   jensen.logit.adjust(p = plogis(est.tab.bias), V = sum(unlist(VarCorr(fit0))))
@@ -299,6 +311,21 @@ polygon(c(out_data$Control$timestep/365 +2000, rev(out_data$Control$timestep/365
 zambia <- ZMB
 western_rural <- single_site(zambia, 18)
 
+# convert to daily feeding rate
+dyed_fraction <- read.csv(file="~/Documents/GitHub/atsb_working_code/dyed_fraction.csv")[1:200,]
+dyed_fraction <- apply(dyed_fraction, MARGIN = 2, FUN = quantile, probs = c(0.01,0.99))[,7:31]
+upper_fun <- approx(x = dyed_fraction[1,], y = seq(1,50,2)/100,
+                    xout = funestus_dyed_fraction[,3])$y
+lower_fun <- approx(x = dyed_fraction[2,], y = seq(1,50,2)/100, 
+                    xout = funestus_dyed_fraction[,2])$y
+
+upper_gamb <- approx(x = dyed_fraction[1,], y = seq(1,50,2)/100,
+                     xout = gambiae_dyed_fraction[,3])$y
+lower_gamb <- approx(x = c(0,dyed_fraction[2,]), y = c(0,seq(1,50,2)/100), 
+                     xout = gambiae_dyed_fraction[,2])$y
+
+feed_rates <- cbind(control = numeric(10), lower_fun, upper_fun, lower_gamb, upper_gamb)
+rownames(feed_rates) <- names(fixef(fit0))
 # int <- western_rural$interventions
 # int <- rbind(int, int[rep(23,3),])
 # int$year[24:26] <- c(2023:2025)
@@ -409,19 +436,20 @@ cluster_params <- get_parameters(list(
   g0 = data$g0[i],
   g = c(data$g1[i], data$g2[i], data$g3[i]),
   h = c(data$h1[i], data$h2[i], data$h3[i]),
-  individual_mosquitoes = FALSE
+  individual_mosquitoes = FALSE,
+  atsb = TRUE
 ))
-cluster_params <- get_parameters(list(
-  human_population = 10000,
-  model_seasonality = TRUE,
-  g0 = fit1$coefficients[1],
-  g = c(fit1$coefficients[2], fit1$coefficients[3], fit1$coefficients[4]),
-  h = c(fit1$coefficients[5], fit1$coefficients[6], fit1$coefficients[7]),
-  individual_mosquitoes = FALSE
-))
+# cluster_params <- get_parameters(list(
+#   human_population = 10000,
+#   model_seasonality = TRUE,
+#   g0 = fit1$coefficients[1],
+#   g = c(fit1$coefficients[2], fit1$coefficients[3], fit1$coefficients[4]),
+#   h = c(fit1$coefficients[5], fit1$coefficients[6], fit1$coefficients[7]),
+#   individual_mosquitoes = FALSE
+# ))
 cluster_params <- set_species(parameters = cluster_params,
                               species = list(arab_params, fun_params, gamb_params),
-                              proportions = c(data$arab[i], data$fun[i], data$gamb[i]))
+                              proportions = c(0.04, 0.95, 0.01))
 
 cluster_params <- set_drugs(parameters = cluster_params, drugs = list(AL_params))
 cluster_params <- set_clinical_treatment(parameters = cluster_params,
@@ -498,7 +526,7 @@ cluster_params <- set_spraying(
                       ms_gamma_1, ms_gamma_2, ms_gamma_3), nrow =3, ncol=3)
 )
 
-cluster_params$timesteps <- 10*365
+cluster_params$timesteps <- 12*365
 prev_at_baseline <- function(x) {
   baseline_timestep <- data$baseline_time[i]
   prev <- x[, "n_detect_730_3650"][baseline_timestep] / x[, "n_730_3650"][baseline_timestep]
@@ -514,11 +542,78 @@ EIR <- calibrate(
   low = 0.001,
   high = 350
 )
+
+lower_out <- list()
+for (i in 1:10) {
+  cluster_params$mu_atsb = c(lower_gamb[i], lower_fun[i], lower_gamb[i])
+  cluster_params <- set_atsb(parameters = cluster_params,
+           timesteps = (8*365):(10*365), 
+           coverages = rep(1,731))
+  cluster_params <- set_equilibrium(
+    parameters = cluster_params,
+    init_EIR = 64
+  )
+  lower_out[[i]] <- run_simulation(timesteps = 12*365,
+                                   parameters = cluster_params)
+  print(i)
+}
+upper_out <- list()
+for (i in 1:10) {
+  cluster_params$mu_atsb = c(upper_gamb[i], upper_fun[i], upper_gamb[i])
+  cluster_params <- set_atsb(parameters = cluster_params,
+                             timesteps = (8*365):(10*365), 
+                             coverages = rep(1,731))
+  cluster_params <- set_equilibrium(
+    parameters = cluster_params,
+    init_EIR = 64
+  )
+  upper_out[[i]] <- run_simulation(timesteps = 12*365,
+                                   parameters = cluster_params)
+  print(i)
+}
+control_out <- list()
+for (i in 1:10) {
+  cluster_params$mu_atsb = c(0,0,0)
+  cluster_params <- set_atsb(parameters = cluster_params,
+                             timesteps = (8*365):(10*365), 
+                             coverages = rep(1,731))
+  cluster_params <- set_equilibrium(
+    parameters = cluster_params,
+    init_EIR = 64
+  )
+  control_out[[i]] <- run_simulation(timesteps = 12*365,
+                                   parameters = cluster_params)
+  print(i)
+}
+plot(control_out[[1]]$timestep/365+2014, 
+     control_out[[1]]$n_detect_730_3650/control_out[[1]]$n_730_3650,
+     type = "l", lwd=4, xlab="Year", ylab="PfPr2-10", frame.plot = F,
+     ylim=c(0,1), xlim=c(2020,2024), col="black")
+lines(lower_out[[3]]$timestep/365+2014, 
+      lower_out[[3]]$n_detect_730_3650/lower_out[[3]]$n_730_3650,
+      type = "l", lwd=4, col = "mediumseagreen")
+
+par(las=1, mfrow=c(2,5))
+for (i in 1:10) {
+  plot(NA, xlab="Year", ylab="PfPr2-10", xlim=c(2020,2025), ylim=c(0,1), frame.plot=F)
+  grid()
+  polygon(c(lower_out[[i]]$timestep/365 +2014, rev(lower_out[[i]]$timestep/365 +2014)),
+          c(lower_out[[i]]$n_detect_730_3650/lower_out[[i]]$n_730_3650,
+            rev(upper_out[[i]]$n_detect_730_3650/upper_out[[i]]$n_730_3650)), 
+          col = adjustcolor(col = "mediumseagreen", alpha.f = 0.5),
+          border = F)
+  lines(control_out[[i]]$timestep/365+2014, 
+        control_out[[i]]$n_detect_730_3650/control_out[[i]]$n_730_3650,
+        type = "l", lwd=4, col = "black")
+  title(unique(zambia_grouped$cluster)[i])
+}
+
+
 cluster_params <- set_equilibrium(
   parameters = cluster_params,
   init_EIR = 64
 )
-out <- run_simulation(timesteps = 10*365,
+out <- run_simulation(timesteps = 12*365,
                       parameters = cluster_params)
 
 par(las=1)

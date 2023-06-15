@@ -14,8 +14,33 @@ out <- run_model(model = "odin_model_asb",
                  dye_days = 1/7,
                  ITN_IRS_on = 365,
                  itn_cov = 0.6,
-                 irs_cov = 0.25,
-                 num_int = 4)
+                 irs_cov = 0.0,
+                 num_int = 2)
+dyed_fraction <- c()
+for (i in seq(1,50,2)) {
+  out <- run_model(model = "odin_model_asb",
+                   init_EIR = 50,
+                   time = 1000,
+                   asb_on = 345+60,
+                   asb_off = 345+60+90,
+                   feeding_rate = i/100,
+                   u_asb = 0.1,
+                   country = "Zambia",
+                   admin2 = "Western",
+                   dye_days = 1/5,
+                   ITN_IRS_on = 365,
+                   itn_cov = 0.7,
+                   irs_cov = 0.0,
+                   num_int = 2)
+  dyed_fraction[(i+1)/2] <- mean(((out$Svasb+out$Evasb+out$Ivasb)/out$mv)[4500])
+}
+plot(seq(1,50,2)/100, dyed_fraction, type="l", lwd=2, frame.plot = F,
+     xlab="Feeding rate", ylab="Dyed fraction", ylim=c(0,0.6))
+grid()
+lines(seq(1,50,2)/100, dyed_fraction, col="mediumseagreen", lwd = 2)
+legend(x="topleft", legend = c("Dye mortality 0%", "Dye mortality 10%"), col=c("black","mediumseagreen"),
+       lwd=2, lty=1, bty="n")
+
 plot(out$t,out$prev, type='l', ylim = c(0, 1), frame.plot = F, xlab="Day", ylab="Prevalence")
 lines(out$t,out$mv/60, type='l', col=adjustcolor(col=2, alpha.f = 0.5))
 abline(v=365+61, lty=2)

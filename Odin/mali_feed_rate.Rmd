@@ -1,0 +1,273 @@
+---
+title: "Does feeding rate predict entomology at the cluster level?"
+author: "N. Moghaddas"
+date: "2023-06-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(lme4)
+library(malariasimulation)
+library(lubridate)
+library(RColorBrewer)
+library(tibble)
+library(DescTools)
+```
+
+The purpose of this document is to explore whether cluster level feeding rates can be used to predict entomological outcomes in the same cluster in the following year. This adds justification to the proposal to measure feeding rates in ATSB clusters in the ongoing ATSB trials. The only study in which feeding rates were measured in the same clusters as ATSB was deployed was the original proof of concept trial in Mali undertaken in 2016-2017. This was a purely entomological trial so no epidemiological measurements were taken.
+
+## Step 1
+
+The method which was used for measuring feeding rates in this trial is different to the trials currently underway. In Mali, ASB stations were essentially deployed during a single day and mosquitoes were caught over night from 6.00pm to 6.00am. A sample was taken from that catch to determine the dyed fraction. As a previous study had shown that mosquito sugar feeding occurs predominantly at night and early dawn, this dyed fraction was assumed to be equivalent to the daily feeding rate. Here is the feeding rate data from the Mali trial.
+
+```{r, fig.height=6, fig.width=12, echo=FALSE}
+mali <- read.csv("~/Documents/GitHub/atsb_working_code/DB monthly natural sugar and ASB feeding/day 2-Table 1.csv")[-(64:65),1:16]
+mali$dyed_fraction <- mali$females.ASB.positive/mali$TOTAL.Sample.females.Day.2
+mali$total_asb_positive <- mali$females.ASB.positive 
+mali$total_sampled <- mali$TOTAL.Sample.females.Day.2 
+mali$total_catch <- mali$CDC.total.females.day.2
+mali$days <- (mali$month-1)*30+mali$Day
+
+par(las=1, mfrow=c(1,2), mar=c(8,4,4,1)+0.1)
+plot(mali$days,
+     mali$dyed_fraction,
+     col=brewer.pal(7, "Set3")[factor(mali$Village)],
+     cex=mali$total_sampled/mean(mali$total_sampled),
+     pch=1,
+     frame.plot=F,
+     ylim=c(0,1),
+     xlim=c(0,400),
+     xlab = "Day",
+     ylab = "Dyed fraction")
+grid()
+mali |>
+  group_by(Village) |>
+  summarise(dyed_fraction=weighted.mean(dyed_fraction,total_sampled),
+            total_catch=sum(total_catch)) -> mali_grouped
+par(las=2)
+plot(mali_grouped$dyed_fraction,
+     col=brewer.pal(7,"Set2")[factor(mali_grouped$Village)],
+     cex=2*mali_grouped$total_catch/mean(mali_grouped$total_catch),
+     frame.plot = F,
+     ylim = c(0,1),
+     ylab = "Dyed fraction",
+     xaxt = "n",
+     xlab = "")
+axis(1, at=1:7, labels=mali_grouped$Village)
+grid()
+
+villages <- mali_grouped$Village
+cluster_quantiles <- matrix(0,nrow = length(villages), ncol=2)
+for (i in 1:length(villages)) {
+  this_village <- villages[i]
+  mali_filtered <- filter(mali, Village==this_village)
+  replicates <- matrix(0,nrow=5000,ncol=nrow(mali_filtered))
+  for (j in 1:5000) {
+    replicates[j,] <- sample(x = mali_filtered$total_asb_positive/mali_filtered$total_sampled, 
+                             replace = TRUE, 
+                             size = nrow(mali_filtered), 
+                             prob = mali_filtered$total_sampled)
+  }
+  cluster_means <- apply(replicates, MARGIN = 1, FUN = mean)
+  cluster_quantiles[i,] <- quantile(cluster_means, probs = c(0.025,0.975))
+}
+colnames(cluster_quantiles) <- c("feed_rate_lower", "feed_rate_upper")
+mali_grouped <- cbind(mali_grouped, cluster_quantiles)
+
+arrows(1:7+0.15,
+       mali_grouped[,4],
+       1:7+0.15,
+       mali_grouped[,5],
+       code=0,
+       lwd=2)
+```
+
+Note that, since it feeding rates measured from ATSB villages would not be reliable, it was decided to only measure feeding rates in the control villages.
+
+## Step 2
+
+Each village also has mosquito abundance data over two years. In 2017, ATSB was deployed in half of the villages.
+
+```{r, echo=FALSE}
+cdc_2016_inside <- read.csv("~/Documents/GitHub/atsb_working_code/Data Synopsis  catches 2016/CDC 2016 inside-Table 1.csv")
+cdc_2016_inside |> 
+  filter(!is.na(cdc_2016_inside$year)) -> cdc_2016_inside
+cdc_2016_inside <- cdc_2016_inside[,-which(is.na(cdc_2016_inside[1,]))]
+cdc_2016_periphery <- read.csv("~/Documents/GitHub/atsb_working_code/Data Synopsis  catches 2016/CDC 2016 periphery-Table 1.csv")
+cdc_2016_periphery |>
+  filter(!is.na(cdc_2016_periphery$year)) -> cdc_2016_periphery
+cdc_2016_periphery[cdc_2016_periphery=="ND"] <- 0
+cdc_2016_periphery <- cdc_2016_periphery[,-which(is.na(cdc_2016_periphery[1,]))]
+cdc_2016_periphery <- cdc_2016_periphery[,-35]
+cdc_2016_periphery$tot.f <- as.numeric(cdc_2016_periphery$tot.f)
+cdc_2016_inside <- add_column(cdc_2016_inside, Sample.Anthrone.females=NA, Anthrone.positive.females=NA, .after=34)
+
+cdc_2016 <- rbind(cdc_2016_inside,cdc_2016_periphery)
+
+cdc_2017 <- read.csv("~/Documents/GitHub/atsb_working_code/DB CDC Malaise PSC catches 2017/CDC-Table 1.csv")
+cdc_2017 <- add_column(cdc_2017, year=17, .before = 1)
+
+```
+
+```{r, fig.height=6, fig.width=12, echo=F}
+cdc_2016$days <- (cdc_2016$Month-1)*30+cdc_2016$Date + (cdc_2016$year-16)*365
+cdc_2017$days <- (cdc_2017$Month-1)*30+cdc_2017$Date + (cdc_2017$year-16)*365
+cdc_2016$total_catch <- cdc_2016$tot.f
+cdc_2017$total_catch <- cdc_2017$tot.f
+par(las=1)
+plot(cdc_2016$days,
+     cdc_2016$total_catch,
+     frame.plot = F,
+     pch=20,
+     xlab="Days",
+     ylab="Catch",
+     xlim=c(0,800),
+     col=c(brewer.pal(9,"Set1"),brewer.pal(8,"Set2"))[factor(cdc_2016$Vilage)])
+points(cdc_2017$days,
+       cdc_2017$total_catch,
+       pch=20,
+       col=c(brewer.pal(9,"Set1"),brewer.pal(8,"Set2"))[factor(cdc_2017$Vilage)])
+grid()
+
+```
+
+Let's look at the trajectories for each cluster
+
+```{r, fig.height=24, fig.width=12, echo=F}
+control_villages <- mali_grouped$Village
+atsb_villages <- c("Tiko", "Kignele", "Krekrelo", "Farabale", "Trekrou", "Sirakele", "Sambadani")
+villages <- c(control_villages, atsb_villages)
+par(las=1, mfcol=c(7,2), mar = c(5.1, 4.1, 4.1, 2.1))
+for (i in 1:14) {
+this_village <- villages[i]
+cdc_2016 |>
+  filter(Vilage==this_village) -> this_cdc_2016
+cdc_2017 |>
+  filter(Vilage==this_village) -> this_cdc_2017
+plot(this_cdc_2016$days,
+     this_cdc_2016$total_catch,
+     frame.plot = F,
+     pch=20,
+     xlab="Days",
+     ylab="Catch",
+     col=factor(this_cdc_2016$Location),
+     xlim=c(0,800),
+     ylim=c(0,max(c(this_cdc_2017$total_catch, this_cdc_2016$total_catch))))
+points(this_cdc_2017$days,
+      this_cdc_2017$total_catch,
+      pch=20)
+grid()
+title(this_village)
+}
+```
+
+## Step 3: Compare feeding rate to the reduction in catch relative to control
+
+```{r, message=F, warning=F, fig.width=12, fig.height=5, echo=F}
+asb_feeding <- data_frame(
+  village = c("Sirakele", "Farabale", "Tiko", "Sambadani", "Krekrelo", 
+              "Trekrou", "Kignele"),
+  date = c("06-10-2016", "08-10-2016", "19-08-2016", "26-08-2016", "09-09-2016", "20-09-2016", NA),
+  total_catch = c(192, 87, 329, 216, 151, 181, NA),
+  total_asb_positive = c(25+33, 33, 114, 69, 70, 69, NA)
+)
+asb_feeding$dyed_fraction <- asb_feeding$total_asb_positive/asb_feeding$total_catch
+
+par(mfrow=c(1,2))
+cdc_2017 |> 
+  group_by(Month, Experimental.or.control) |>
+  summarise(total_catch=sum(tot.f)/7) |>
+  filter(Experimental.or.control == "Con.") -> control_2017
+plot(control_2017$Month,
+     control_2017$total_catch,
+     frame.plot = F, 
+     xlab = "Month",
+     ylab = "Count",
+     type = "l",
+     lwd=2,
+     ylim = c(0,600))
+auc_control <- AUC(control_2017$Month,
+                   control_2017$total_catch)
+auc_village <- c()
+for (i in 1:7) {
+  this_village <- asb_feeding$village[i]
+  cdc_2017 |>
+    group_by(Month, Vilage) |>
+    summarise(total_catch=sum(tot.f)) |>
+    filter(Vilage == this_village) -> village_2017
+  lines(village_2017$Month,
+        village_2017$total_catch,
+        lwd =2,
+        col = brewer.pal(7,"Set1")[i])
+  auc_village[i] <- AUC(village_2017$Month,
+                        village_2017$total_catch)
+}
+grid()
+reduction <- (auc_control - auc_village)/auc_control
+plot(asb_feeding$dyed_fraction[1:6],
+     reduction[1:6],
+     col=brewer.pal(7, "Set1"),
+     frame.plot = F,
+     cex= asb_feeding$total_catch[1:6]/mean(asb_feeding$total_catch[1:6]),
+     ylab = "Reduction relative to control",
+     xlab = "Dyed fraction")
+grid()
+fit <- lm(reduction[1:6] ~ asb_feeding$dyed_fraction[1:6])
+lines(asb_feeding$dyed_fraction[1:6],
+      predict(fit))
+summary(fit)
+```
+
+## Step 4: Compare the feeding rate to the reduction in catch relative to 2016
+
+```{r, warning=F, message=F, echo=F}
+auc_2016 <- c()
+auc_2017 <- c()
+atsb_villages <- asb_feeding$village
+control_villages <- mali_grouped$Village
+villages <- c(atsb_villages, control_villages)
+for (i in 1:length(villages)) {
+  cdc_2016 |>
+    group_by(year, Month, Vilage, Location) |>
+    summarise(total_catch=sum(tot.f)) |>
+    filter(Vilage==villages[i] & Location != "periphery" & year == 16) -> this_cdc_2016
+  cdc_2017 |>
+    group_by(Month, Vilage) |>
+    summarise(total_catch=sum(tot.f)) |>
+    filter(Vilage==villages[i]) -> this_cdc_2017
+  auc_2016[i] <- AUC(x = this_cdc_2016$Month,
+                     y = this_cdc_2016$total_catch,
+                     from = 4,
+                     to = 12)
+  auc_2017[i] <- AUC(x = this_cdc_2017$Month,
+                     y = this_cdc_2017$total_catch,
+                     from = 4,
+                     to = 12)
+}
+
+catch <- data_frame(village = villages,
+                    auc_2016 = auc_2016,
+                    auc_2017 = auc_2017,
+                    ATSB = c(rep(1,7), rep(0,7)),
+                    reduction = (auc_2016-auc_2017)/auc_2016)
+catch$dyed_fraction <- c(asb_feeding$dyed_fraction, rep(NA,7))
+catch$asb_sample <- c(asb_feeding$total_catch, rep(NA,7))
+
+par(las=1)
+plot(catch$dyed_fraction[1:6],
+     catch$reduction[1:6],
+     pch=1,
+     col=factor(catch$village)[1:6],
+     frame.plot = F,
+     xlab = "2016 dyed fraction",
+     ylab = "Reduction relative to 2016")
+grid()
+fit <- lm(catch$reduction[1:6] ~ catch$dyed_fraction[1:6])
+lines(catch$dyed_fraction[1:6],
+      predict(fit))
+summary(fit)
+```
+
+## 
