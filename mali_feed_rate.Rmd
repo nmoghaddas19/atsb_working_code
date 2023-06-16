@@ -17,7 +17,7 @@ library(DescTools)
 library(umbrella)
 ```
 
-The purpose of this document is to explore whether cluster level feeding rates can be used to predict entomological outcomes in the same cluster in the following year. This adds justification to the proposal to measure feeding rates in ATSB clusters in the ongoing ATSB trials. The only study in which feeding rates were measured in the same clusters as ATSB was deployed was the original proof of concept trial in Mali undertaken in 2016-2017. This was a purely entomological trial so no epidemiological measurements were taken.
+The main purpose of this document is to explore whether cluster level feeding rates can be used to predict entomological outcomes in the same cluster. This adds justification to the proposal to measure feeding rates in ATSB clusters in the ongoing ATSB trials. The only study in which feeding rates were measured in the same clusters as ATSB was deployed was the original proof of concept trial in Mali undertaken in 2016-2017. This was a purely entomological trial so no epidemiological measurements were taken. Therefore I will also look at the variability in count data to determine how reliable it can be as an indicator of efficacy. This document also explores potential drivers of variability in feeding rate by looking for correlation with natural sugar feeding. This file makes use of two sources of data on the Mali trials: count data reported from CDC traps placed in all fourteen villages throughout the baseline year and the trial year, and data on the fraction of mosquitoes caught that were dyed due to having fed on a non toxic bait station.
 
 ## Step 1
 
@@ -85,8 +85,6 @@ arrows(1:7+0.15,
        lwd=2)
 ```
 
-Note that, since it feeding rates measured from ATSB villages would not be reliable, it was decided to only measure feeding rates in the control villages.
-
 ## Step 2
 
 Each village also has mosquito abundance data over two years. In 2017, ATSB was deployed in half of the villages.
@@ -96,17 +94,17 @@ cdc_2016_inside <- read.csv("~/Documents/GitHub/atsb_working_code/Data Synopsis 
 cdc_2016_inside |> 
   filter(!is.na(cdc_2016_inside$year)) -> cdc_2016_inside
 cdc_2016_inside <- cdc_2016_inside[,-which(is.na(cdc_2016_inside[1,]))]
-cdc_2016_periphery <- read.csv("~/Documents/GitHub/atsb_working_code/Data Synopsis  catches 2016/CDC 2016 periphery-Table 1.csv")
-cdc_2016_periphery |>
-  filter(!is.na(cdc_2016_periphery$year)) -> cdc_2016_periphery
-cdc_2016_periphery[cdc_2016_periphery=="ND"] <- 0
-cdc_2016_periphery <- cdc_2016_periphery[,-which(is.na(cdc_2016_periphery[1,]))]
-cdc_2016_periphery <- cdc_2016_periphery[,-35]
-cdc_2016_periphery$tot.f <- as.numeric(cdc_2016_periphery$tot.f)
-cdc_2016_inside <- add_column(cdc_2016_inside, Sample.Anthrone.females=NA, Anthrone.positive.females=NA, .after=34)
-
-cdc_2016 <- rbind(cdc_2016_inside,cdc_2016_periphery)
-
+# cdc_2016_periphery <- read.csv("~/Documents/GitHub/atsb_working_code/Data Synopsis  catches 2016/CDC 2016 periphery-Table 1.csv")
+# cdc_2016_periphery |>
+#   filter(!is.na(cdc_2016_periphery$year)) -> cdc_2016_periphery
+# cdc_2016_periphery[cdc_2016_periphery=="ND"] <- 0
+# cdc_2016_periphery <- cdc_2016_periphery[,-which(is.na(cdc_2016_periphery[1,]))]
+# cdc_2016_periphery <- cdc_2016_periphery[,-35]
+# cdc_2016_periphery$tot.f <- as.numeric(cdc_2016_periphery$tot.f)
+# cdc_2016_inside <- add_column(cdc_2016_inside, Sample.Anthrone.females=NA, Anthrone.positive.females=NA, .after=34)
+# 
+# cdc_2016 <- rbind(cdc_2016_inside,cdc_2016_periphery)
+cdc_2016 <- cdc_2016_inside
 cdc_2017 <- read.csv("~/Documents/GitHub/atsb_working_code/DB CDC Malaise PSC catches 2017/CDC-Table 1.csv")
 cdc_2017 <- add_column(cdc_2017, year=17, .before = 1)
 
@@ -232,7 +230,7 @@ for (i in 1:length(villages)) {
   cdc_2016 |>
     group_by(year, Month, Vilage, Location) |>
     summarise(total_catch=sum(tot.f)) |>
-    filter(Vilage==villages[i] & Location != "periphery" & year == 16) -> this_cdc_2016
+    filter(Vilage==villages[i] & year == 16) -> this_cdc_2016
   cdc_2017 |>
     group_by(Month, Vilage) |>
     summarise(total_catch=sum(tot.f)) |>

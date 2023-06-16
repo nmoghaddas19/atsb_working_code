@@ -45,3 +45,52 @@ grid()
 fit2 <- fit_fourier(rainfall = zambia$Count, t = zambia$days, floor = 0.001)
 predict_2 <- fourier_predict(coef = fit2$coefficients, t = 1:365, floor = 0.001)
 lines(predict_2, col = "dodgerblue", lwd = 2, lty = 2)
+
+
+# trying for mali data
+basecos <- function(level, t){
+  cos(2 * pi * t * level)
+}
+
+basesin <- function(level, t){
+  sin(2 * pi * t * level)
+}
+fit_lm <- function(rainfall, t){
+  if(any(t > 365) | any (t < 1)){
+    stop("t must be between 1 and 365")
+  }
+  t <- t / 365
+  model_data <- data.frame(
+    rainfall = rainfall,
+    g1 = basecos(level = 1, t = t),
+    g2 = basecos(level = 2, t = t),
+    g3 = basecos(level = 3, t = t),
+    h1 = basesin(level = 1, t = t),
+    h2 = basesin(level = 2, t = t),
+    h3 = basesin(level = 3, t = t))
+  
+  model <- stats::lm(rainfall ~ g1 + g2 + g3 + h1 + h2 + h3, data = model_data)
+  return(model)
+}
+
+cdc_2016 |> 
+  filter(Vilage == "Madina" & days < 437) -> village_2016 
+fit <- fit_fourier(rainfall = village_2016$total_catch, 
+                   t = village_2016$days - min(village_2016$days)+1,
+                   floor=0)  
+predict <- fourier_predict(coef=fit$coefficients, t=1:365, floor = 0)
+plot(village_2016$days,
+     village_2016$total_catch,
+     frame.plot = F,
+     pch=20,
+     xlab="Days",
+     ylab="Catch",
+     xlim=c(0,800))
+lines(predict$t+min(village_2016$days)+1, 
+      predict$profile,
+      col="darkorchid3",
+      lwd = 2)
+
+fit_lm(village_2016$total_catch, village_2016$days-min(village_2016$days)+1)
+
+
