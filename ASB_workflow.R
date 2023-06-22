@@ -8,7 +8,7 @@
 # generate predictions.                                                        #
 ################################################################################
 
-setwd("~/GitHub/")
+setwd("~/Documents/GitHub/")
 # load in packages
 library(malariasimulation)
 library(ICDMM)
@@ -55,7 +55,7 @@ for (i in 1:nrow(dyed_fraction)) {
 }
 abline(h = 0.2, lty="dashed")
 # load in data
-dat.all <- read.csv("atsb_working_code/ZAM.ASB.Target Summaries.2021.10.01.clean.csv")
+dat.all <- read.csv("ZAM.ASB.Target Summaries.2021.10.01.clean.csv")
 # cleaning and checking ####
 names(dat.all) <- tolower(names(dat.all))
 dim(dat.all)
