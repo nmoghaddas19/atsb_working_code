@@ -176,13 +176,13 @@ rownames(feed_rates) <- names(fixef(fit0))
 # forecast predictions using malariasimulation
 # !!! TWO APPROCAHES !!! 
 # OPTION ONE: using historical assumptions in foresite site files ####
-zambia <- ZMB
-zambia$sites$name_1
-western_rural <- single_site(zambia, 18)
+ZMB <- ZMB
+ZMB$sites$name_1
+western_rural <- single_site(ZMB, 18)
 # plot(western_rural$prevalence$year, western_rural$prevalence$pfpr, type="l", lwd=2, 
 #      frame.plot = F, ylim = c(0,1))
 # western_rural$vectors
-
+int <- western_rural$interventions
 out_data <- list()
 for (j in 1:2) {
   bound <- c("lower", "upper")[j]
