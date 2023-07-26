@@ -12,10 +12,10 @@ library(foresite)
 library(site)
 
 # load in the count data
-cdc_2017 <- read.csv("atsb_working_code/DB CDC Malaise PSC catches 2017/CDC-Table 1.csv")
+cdc_2017 <- read.csv("~/Documents/GitHub/atsb_working_code/DB CDC Malaise PSC catches 2017/CDC-Table 1.csv")
 
 # load control malariasim run
-malariasim_control <- readRDS("atsb_working_code/out_mali.RDS")$Kayes_rural_data
+malariasim_control <- readRDS("~/Documents/GitHub/atsb_working_code/out_mali.RDS")$Kayes_rural_data
 
 # find scaling factor 
 cdc_2017 |>
@@ -123,7 +123,7 @@ arrows(2017+(0:6+6)/12,
        code=3,
        length=0.05,
        col=2)
-
+grid()
 # ----
 
 mali <- MLI

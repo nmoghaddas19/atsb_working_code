@@ -21,7 +21,7 @@ library(foresite)
 library(site)
 
 # read in the sugar feeding data
-sugar_feeding <- read.csv("atsb_working_code/DB monthly natural sugar and ASB feeding/day 2-Table 1.csv")
+sugar_feeding <- read.csv("~/Documents/GitHub/atsb_working_code/DB monthly natural sugar and ASB feeding/day 2-Table 1.csv")
 sugar_feeding <- sugar_feeding[-(64:65),] # final two rows are NAs so removing them
 
 sugar_feeding |>
@@ -147,6 +147,7 @@ polygon(c(out_bounds[[1]]$timestep/365+2000, rev(out_bounds[[2]]$timestep/365+20
         col = adjustcolor("dodgerblue", alpha.f = 0.4), border = FALSE)
 
 # points(2017+cdc_2017$Month/12, cdc_2017$tot.f, pch=20, col=as.factor(cdc_2017$Experimental.or.control))
+
 cdc_2017 |>
   group_by(Month, Experimental.or.control) |>
   summarise(Mean=mean(tot.f),CI=1.96*sd(tot.f)/sqrt(n())) |>

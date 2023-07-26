@@ -196,7 +196,7 @@ plot(mali_grouped$ndvi,
      ylab = "Dyed fraction",
      xlab = "Vegetation index",
      pch=19,
-     xlim=c(0.35,0.5),
+     xlim=c(0,0.6),
      ylim=c(0,0.6))
 grid()
 arrows(mali_grouped$ndvi,
