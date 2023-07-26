@@ -308,8 +308,7 @@ polygon(c(out_data$Control$timestep/365 +2000, rev(out_data$Control$timestep/365
 # stop ####
 
 # OPTION TWO: calibrating to baseline prevalence and predicting forwards ####
-zambia <- ZMB
-western_rural <- single_site(zambia, 18)
+western_rural <- single_site(ZMB, 18)
 
 # convert to daily feeding rate
 dyed_fraction <- read.csv(file="~/Documents/GitHub/atsb_working_code/dyed_fraction.csv")[1:200,]
@@ -360,23 +359,23 @@ data <- data_frame(Cluster = 1:10,
                    feed_rate_gamb_lo = rnorm(10, mean=0.08, sd=0.04),
                    feed_rate_gamb_hi = rnorm(10, mean=0.21, sd=0.04),
                    pfpr_baseline = rnorm(10, mean=0.2, sd=0.05),
-                   baseline_time = round(rnorm(10, mean=7*365+50, sd=20), digits = 0),
+                   baseline_time = rep(2645, 10),
                    itn_timestep_1 = rep(365-30, 10),
-                   itn_coverage_1 = rep(western_rural$interventions$itn_use[16], 10),
+                   itn_coverage_1 = rep(0.6, 10),
                    resistance_1 = rep(western_rural$interventions$pyrethroid_resistance[16], 10),
                    itn_timestep_2 = rep(4*365-30, 10),
-                   itn_coverage_2 = rep(western_rural$interventions$itn_use[19], 10),
+                   itn_coverage_2 = rep(0.6, 10),
                    resistance_2 = rep(western_rural$interventions$pyrethroid_resistance[19], 10),
                    itn_timestep_3 = rep(7*365-30, 10),
-                   itn_coverage_3 = rep(western_rural$interventions$itn_use[22], 10),
+                   itn_coverage_3 = rep(0.6, 10),
                    resistance_3 = rep(0.52, 10),
                    retention = rep(5*365, 10),
                    irs_timestep_1 = rep(365-30, 10),
-                   irs_coverage_1 = rep(western_rural$interventions$irs_cov[16], 10),
+                   irs_coverage_1 = rep(0.25, 10),
                    irs_timestep_2 = rep(4*365-30, 10),
-                   irs_coverage_2 = rep(western_rural$interventions$irs_cov[19], 10),
+                   irs_coverage_2 = rep(0.25, 10),
                    irs_timestep_3 = rep(7*365-30, 10),
-                   irs_coverage_3 = rep(western_rural$interventions$irs_cov[22], 10), 
+                   irs_coverage_3 = rep(0.25, 10), 
                    ft_1 = rep(western_rural$interventions$tx_cov[16], 10),
                    prop_act_1 = rep(western_rural$interventions$prop_act[16], 10),
                    ft_2 = rep(western_rural$interventions$tx_cov[19], 10),
@@ -437,7 +436,7 @@ cluster_params <- get_parameters(list(
   g = c(data$g1[i], data$g2[i], data$g3[i]),
   h = c(data$h1[i], data$h2[i], data$h3[i]),
   individual_mosquitoes = FALSE,
-  atsb = TRUE
+  atsb = FALSE
 ))
 # cluster_params <- get_parameters(list(
 #   human_population = 10000,
@@ -458,7 +457,7 @@ cluster_params <- set_clinical_treatment(parameters = cluster_params,
                                          coverages = c(data$ft_1[i]*data$prop_act_1[i],
                                                        data$ft_2[i]*data$prop_act_2[i],
                                                        data$ft_3[i]*data$prop_act_3[i]))
-pyrethroid_params <- read.csv("pyrethroid_only_nets.csv")
+pyrethroid_params <- read.csv("~/Documents/GitHub/pyrethroid_only_nets.csv")
 dn0_1 <- pyrethroid_params$dn0_med[data$resistance_1[i]*100+1]
 dn0_2 <- pyrethroid_params$dn0_med[data$resistance_2[i]*100+1]
 dn0_3 <- pyrethroid_params$dn0_med[data$resistance_3[i]*100+1]
@@ -536,7 +535,7 @@ prev_at_baseline <- function(x) {
 set.seed(123)
 EIR <- calibrate(
   parameters = cluster_params,
-  target = data$pfpr_baseline[i],
+  target = 0.5,
   summary_function = prev_at_baseline, #using own summary function at required baseline survey timestep
   tolerance = 0.01,
   low = 0.001,
@@ -611,7 +610,7 @@ for (i in 1:10) {
 
 cluster_params <- set_equilibrium(
   parameters = cluster_params,
-  init_EIR = 64
+  init_EIR = 300
 )
 out <- run_simulation(timesteps = 12*365,
                       parameters = cluster_params)
@@ -619,10 +618,13 @@ out <- run_simulation(timesteps = 12*365,
 par(las=1)
 plot(out$timestep/365+2014, out$n_detect_730_3650/out$n_730_3650,
      type = "l", lwd=4, xlab="Year", ylab="PfPr2-10", frame.plot = F,
-     ylim=c(0,1), xlim=c(2020,2024), col="deeppink")
+     ylim=c(0,1), xlim=c(2020,2024), col="black")
 lines(out$timestep/365+2014, out$n_detect_730_3650/out$n_730_3650,
       type = "l", lwd=4, col = "mediumseagreen")
 grid()
+points(2645/365+2014, 0.5,
+       cex=2,
+       pch=19)
 legend("topright", legend = c("Fitted to rainfall", "Fitted to mosquito catch"), 
        col = c("mediumseagreen", "deeppink"), lwd=4, bty="n")
 itn_distributions <- c(data$itn_timestep_1[i], data$itn_timestep_2[i], data$itn_timestep_3[i])

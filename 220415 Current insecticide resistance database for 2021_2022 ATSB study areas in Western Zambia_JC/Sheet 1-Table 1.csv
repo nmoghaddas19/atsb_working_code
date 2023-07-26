@@ -1,0 +1,200 @@
+,Investigation type,Test type,Year,Month,Location,District,Species used in test replicates,Mosquito Generation,Insecticides,Concentration,Insecticide Class,Number of replicates tested,Total female mosquitoes in all test replicates,Total male mosquitoes in all test replicates,Total number of mosquitoes in all test replicates,Number of mosquitoes in each control replicate,Total mosquitoes dead at 24hrs in the control,Time at which mortality recorded,Number of female mosquitoes dead at 24 hrs,Female_Recorded average mortality in treatments (% or number dead),Number of male mosquitoes dead at 24 hrs,Male_Recorded average mortality in treatments (% or number dead),Total number of all mosquitoes dead at 24 hrs,Aggregated average mortality in control (% of number dead),Aggregated _average mortality in treatments (% of number dead)
+,Phenotypic,WHO test kit-adults,2021,May,Katongo,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,12,9,21,25,0,24hrs,12,100.0%,9,100,21,0,100
+,Phenotypic,WHO test kit-adults,2021,May,Katongo,Luampa,An.gambiae s.l,F1,Bendiocarb,0.1,Carbamate,1,8,4,12,25,0,24hrs,8,100,4,100,12,0,100
+,Phenotypic,WHO test kit-adults,2021,June,Namilange,Nkeyema,An.funestus s.l,F0,Permethrin,0.75,Pyrethroid,1,3,11,14,25,0,24hrs,3,100,9,81.8,12,0,85.7
+,Phenotypic,WHO test kit-adults,2021,June,Longe,Nkeyema,An.funestus s.l,F0,Permethrin,0.75,Pyrethroid,2,41,4,45,30,0,24hrs,35,85.4,2,50.0,37,0,82.2
+,Phenotypic,WHO test kit-adults,2021,June,Zonal,Nkeyema,An.funestus s.l,F0,Permethrin,0.75,Pyrethroid,1,21,12,33,15,0,24hrs,14,66,10,83.0,24,0,72.7
+,Phenotypic,WHO test kit-adults,2021,May,Longe,Kaoma,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,17,3,20,25,0,24hrs,11,0,3,0,14,0,70.0
+,Phenotypic,WHO test kit-adults,2021,June,Namilange,Nkeyema,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,2,1,3,25,0,24hrs,2,100,1,100,3,0,100.0
+,Phenotypic,WHO test kit-adults,2021,June,Namilange,Nkeyema,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,4,1,5,25,0,24hrs,4,100,1,100,5,0,100.0
+,Phenotypic,WHO test kit-adults,2021,June,Nyango,Kaoma,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,3,0,3,25,0,24hrs,1,0,0,0,1,0,33.3
+,Phenotypic,WHO test kit-adults,2021,June,Namilange,Nkeyema,An.funestus s.l,F1,Bendiocarb,0.1,Carbamate,1,1,0,1,10,0,24hrs,1,100,0,0,1,0,100.0
+,Phenotypic,WHO test kit-adults,2021,June,Kalale,Nkeyema,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,2,1,3,19,0,24hrs,2,100,1,100,3,0,100.0
+,Phenotypic,WHO test kit-adults,2021,June,Katunda,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,1,1,2,25,0,24hrs,0,0,0,0,0,0,0.0
+,Phenotypic,WHO test kit-adults,2021,May,Katongo,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,2,1,3,16,0,24hrs,1,50.0,1,100,2,0,66.7
+,Phenotypic,WHO test kit-adults,2021,May,Namilangi,Nkeyema,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,6,4,10,25,0,24hrs,5,83.3,4,100,9,0,90.0
+,Phenotypic,WHO test kit-adults,2021,May,Kakanda,Nkeyema,An.funestus s.l,F1,Deltamethrin,0.05,Pyrethroid,1,12,0,12,10,0,24hrs,12,100.0,0,0,12,0,100.0
+,Phenotypic,WHO test kit-adults,2021,May,Longe,Nkeyema,An.funestus s.l,F1,Deltamethrin,0.05,Pyrethroid,2,5,6,11,7,0,24hrs,4,80.0,6,100,10,0,90.9
+,Phenotypic,WHO test kit-adults,2021,November,Katongo,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,17,9,26,6,0,24hrs,14,82.3,7,77.8,21,0,80.8
+,Phenotypic,WHO test kit-adults,2021,November,katunda,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,6,11,17,6,0,24hrs,5,83.3,7,63.6,12,0,70.6
+,Phenotypic,WHO test kit-adults,2021,November,Katongo,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,18,10,28,26,1,24hrs,5,27.8,9,90,14,3.8,50.0
+,Phenotypic,WHO test kit-adults,2021,November,Katongo,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,2,14,31,45,26,1,24hrs,13,92.9,25,80.6,38,3.8,84.4
+,Phenotypic,WHO test kit-adults,2021,November,Katongo,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,3,14,23,37,26,1,24hrs,12,85.7,19,82.6,31,3.8,83.8
+,Phenotypic,WHO test kit-adults,2021,November,Katongo,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,4,15,22,37,26,1,24hrs,14,93.3,20,90.9,34,3.8,91.9
+,Phenotypic,WHO test kit-adults,2021,November,Katongo,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,5,13,11,24,26,1,24hrs,12,92.3,11,100,23,3.8,95.8
+,Phenotypic,WHO test kit-adults,2021,November,Katongo,Luampa,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,1,7,28,35,20,0,24hrs,5,71.4,22,78.6,27,0,77.1
+,Phenotypic,WHO test kit-adults,2021,November,Katongo,Luampa,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,2,25,8,33,20,0,24hrs,24,96,8,100,32,0,97.0
+,Phenotypic,WHO test kit-adults,2021,November,Katongo,Luampa,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,3,23,3,26,20,0,24hrs,23,100,3,100,26,0,100.0
+,Phenotypic,WHO test kit-adults,2021,November,Katongo,Luampa,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,4,18,4,22,20,0,24hrs,18,100,2,50,20,0,90.9
+,Phenotypic,WHO test kit-adults,2021,November,Katongo,Luampa,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,5,18,8,26,20,0,24hrs,17,94.4,8,100,25,0,96.2
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Alphacypermethrin,0.05,Pyrethroid,1,33,12,45,25,0,24hrs,24,72.7,10,83.3,34,0,75.6
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Alphacypermethrin,0.05,Pyrethroid,2,27,4,31,25,0,24hrs,19,70.4,3,75,22,0,71.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Alphacypermethrin,0.05,Pyrethroid,3,26,2,28,25,0,24hrs,14,53.8,1,50,15,0,53.6
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Lambdacyhalothrin,0.05,Pyrethroid,1,38,18,56,30,0,24hrs,24,63.2,15,83.3,39,0,69.6
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Lambdacyhalothrin,0.05,Pyrethroid,2,29,7,36,30,0,24hrs,23,79.3,6,85.7,29,0,80.6
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Lambdacyhalothrin,0.05,Pyrethroid,3,34,3,37,30,0,24hrs,26,76.5,3,100,29,0,78.4
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,20,14,34,27,1,24hrs,20,100,14,100,34,3.7,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,2,18,10,28,27,1,24hrs,18,100,10,100,28,3.7,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,3,24,5,29,27,1,24hrs,24,100,5,100,29,3.7,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,4,20,4,24,27,1,24hrs,20,100,4,100,24,3.7,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,DDT,4,Organochlorine,1,33,3,36,25,0,24hrs,33,100,3,100,36,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,DDT,4,Organochlorine,2,28,4,32,25,0,24hrs,28,100,4,100,32,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mwandansengo,Luampa,An. funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,0,1,1,20,0,24hrs,0,0,0,0,0,0,0.0
+,Phenotypic,WHO test kit-adults,2021,December,Katunda,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,5,4,9,20,0,24hrs,5,100,4,100,9,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mushwala,Kaoma,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,1,0,1,20,0,24hrs,1,100,0,0,1,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katunda,Luampa,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,1,5,2,7,20,0,24hrs,4,80,2,100,6,0,85.7
+,Phenotypic,WHO test kit-adults,2021,December,Mukuye,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,7,8,15,20,0,24hrs,7,100,8,100,15,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Bendiocarb,0.1,Carbamate,1,24,6,30,20,0,24hrs,23,95.8,6,100,29,0,96.7
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Bendiocarb,0.1,Carbamate,2,20,3,23,20,0,24hrs,20,100,3,100,23,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Bendiocarb,0.1,Carbamate,3,29,22,51,20,0,24hrs,29,100,22,100,51,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Bendiocarb,0.1,Carbamate,4,28,11,39,20,0,24hrs,28,100,11,100,39,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Bendiocarb,0.1,Carbamate,5,41,15,56,20,0,24hrs,41,100,15,100,56,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,40,6,46,20,0,24hrs,40,100,6,100,46,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,2,37,9,46,20,0,24hrs,37,100,9,100,46,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,DDT,4,Organochlorine,1,34,1,35,20,0,24hrs,34,100,1,100,35,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,DDT,4,Organochlorine,2,41,8,49,20,0,24hrs,41,100,8,100,49,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Alphacypermethrin,0.05,Pyrethroid,1,40,0,40,20,0,24hrs,16,40,0,,16,0,40.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Lambdacyhalothrin,0.05,Pyrethroid,1,32,1,33,20,0,24hrs,22,68.8,1,100,23,0,69.7
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Alphacypermethrin plus PBO,,Pyrethroid,1,10,38,48,20,0,24hrs,10,100,38,100,48,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Alphacypermethrin plus PBO,,Pyrethroid,2,18,28,46,20,0,24hrs,18,100,28,100,46,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Alphacypermethrin plus PBO,,Pyrethroid,3,6,61,67,20,0,24hrs,6,100,61,100,67,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Alphacypermethrin plus PBO,,Pyrethroid,4,31,27,58,20,0,24hrs,31,100,27,100,58,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Lambdacyhalothrin plus PBO,,Pyrethroid,1,3,39,42,20,0,24hrs,3,100,39,100,42,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Lambdacyhalothrin plus PBO,,Pyrethroid,2,17,28,45,20,0,24hrs,17,100,28,100,45,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Lambdacyhalothrin plus PBO,,Pyrethroid,3,29,21,50,20,0,24hrs,29,100,21,100,50,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Lambdacyhalothrin plus PBO,,Pyrethroid,4,24,20,44,20,0,24hrs,24,100,20,100,44,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mukuye,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,12,16,28,14,0,24hrs,11,91.7,16,100,27,0,96.4
+,Phenotypic,WHO test kit-adults,2021,December,Mukuye,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,2,14,11,25,20,0,24hrs,14,100,11,100,25,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mukuye,Nkeyema,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,1,20,16,36,20,0,24hrs,20,100,14,87.5,34,0,94.4
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,13,22,35,20,0,24hrs,13,100,20,90.9,33,0,94.3
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,1,7,25,32,15,0,24hrs,6,85.7,25,100,31,0,96.9
+,Phenotypic,WHO test kit-adults,2021,December,Katunda,Luampa,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,1,2,0,2,20,0,24hrs,2,100,0,,2,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mulungulungwa,Nkeyema,An.gambiae s.l,F1,Bendiocarb,0.1,Carbamate,1,1,0,1,20,0,24hrs,1,100,0,,1,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mbanyutu,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,4,4,8,20,0,24hrs,4,100,4,100,8,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mukuye,Nkeyema,An.gambiae s.l,F1,Bendiocarb,0.1,Carbamate,1,21,18,39,13,0,24hrs,21,100,18,100,39,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mbanyutu,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,4,4,8,20,0,24hrs,4,100,4,100,8,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mbanyutu,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,1,1,2,20,0,24hrs,1,100,0,0,1,0,50.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,16,18,34,19,0,24hrs,13,81.25,18,100,31,0,91.2
+,Phenotypic,WHO test kit-adults,2021,December,Mangango,Kaoma,An.gambiae s.l,F1,Bendiocarb,0.1,Carbamate,1,12,6,18,20,0,24hrs,12,100,6,100,18,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mangango,Kaoma,An.gambiae s.l,F1,Bendiocarb,0.1,Carbamate,1,2,3,5,17,0,24hrs,2,100,3,100,5,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mangango,Kaoma,An.funestus s.l,F1,Bendiocarb,0.1,Carbamate,1,1,0,1,20,0,24hrs,0,0,0,,0,0,0.0
+,Phenotypic,WHO test kit-adults,2021,December,Mwandansengo,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,2,0,2,25,0,24hrs,2,100,0,,2,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mwandansengo,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,1,0,1,20,0,24hrs,1,100,0,,1,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Katongo,Luampa,An.gambiae s.l,F1,Bendiocarb,0.1,Carbamate,1,1,9,10,20,0,24hrs,1,100,9,100,10,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mbanyutu,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,4,3,7,25,0,24hrs,4,100,3,100,7,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Namilenge,Nkeyema,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,1,0,1,20,0,24hrs,1,100,0,,1,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mukuye,Nkeyema,An.gambiae s.l,F1,Bendiocarb,0.1,Carbamate,1,8,13,21,20,0,24hrs,8,100,13,100,21,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mushwala,Kaoma,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,1,2,2,4,20,0,24hrs,2,100,2,100,4,0,100.0
+,Phenotypic,WHO test kit-adults,2021,December,Mushwala,Kaoma,An.funestus s.l,F1,Deltamethrin,0.05,Pyrethroid,1,0,1,1,20,0,24hrs,0,,1,100,1,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,Zonal,Nkeyema,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,1,3,2,5,20,0,24hrs,2,66.7,2,100,4,0,80.0
+,Phenotypic,WHO test kit-adults,2022,January,Zonal,Nkeyema,An.gambiae s.l,F1,Bendiocarb,0.1,Carbamate,1,6,8,14,20,0,24hrs,6,100,8,100,14,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,Zonal,Nkeyema,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,1,2,0,2,20,0,24hrs,2,100,0,,2,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,Zonal,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,15,2,17,20,0,24hrs,9,60,2,100,11,0,64.7
+,Phenotypic,WHO test kit-adults,2022,January,Zonal,Nkeyema,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,1,0,1,20,0,24hrs,0,0,0,,0,0,0.0
+,Phenotypic,WHO test kit-adults,2022,January,Zonal,Nkeyema,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,1,2,3,20,0,24hrs,0,0,0,0,0,0,0.0
+,Phenotypic,WHO test kit-adults,2022,January,Mushwala,Kaoma,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,1,13,9,22,16,0,24hrs,13,100,9,100,22,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,Zonal,Nkeyema,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,1,3,2,5,16,0,24hrs,1,33.3,1,50,2,0,40.0
+,Phenotypic,WHO test kit-adults,2022,January,Mwandansengo,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,1,1,2,16,0,24hrs,0,0,0,0,0,0,0.0
+,Phenotypic,WHO test kit-adults,2022,January,Mushwala,Kaoma,An.gambiae s.l,F1,Deltamethrin,0.05,Pyrethroid,1,2,8,10,16,0,24hrs,1,50,6,75,7,0,70.0
+,Phenotypic,WHO test kit-adults,2022,January,Katunda,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,9,0,9,16,0,24hrs,2,22.2,0,,2,0,22.2
+,Phenotypic,WHO test kit-adults,2022,January,katunda,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,0,1,1,16,0,24hrs,0,,1,100,1,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,Zonal,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,1,0,1,25,0,24hrs,1,100,0,,1,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,Zonal,Nkeyema,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,2,0,2,25,0,24hrs,2,100,0,,2,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,katunda,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,2,0,2,25,0,24hrs,1,50,0,,1,0,50.0
+,Phenotypic,WHO test kit-adults,2022,January,Mangango,Kaoma,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,1,0,1,25,0,24hrs,1,100,0,,1,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,Katongo,Luampa,An.gambiae s.l,F1,Permethrin plus PBO,,Pyrethroid,1,36,8,44,25,0,24hrs,36,100,8,100,44,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,Longe,Kaoma,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,19,5,24,27,0,24hrs,10,52.6,5,100,15,0,62.5
+,Phenotypic,WHO test kit-adults,2022,January,Mukuye,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,34,4,38,25,0,24hrs,27,79.4,3,75,30,0,78.9
+,Phenotypic,WHO test kit-adults,2022,January,Mukuye,Nkeyema,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,0,1,1,25,0,24hrs,0,,1,100,1,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,Mwandansengo,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,1,0,1,25,0,24hrs,0,0,0,,0,0,0.0
+,Phenotypic,WHO test kit-adults,2022,January,katunda,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,0,3,3,25,0,24hrs,0,,1,33.3,1,0,33.3
+,Phenotypic,WHO test kit-adults,2022,January,Luampa Mission,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,43,5,48,43,0,24hrs,43,100,5,100,48,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,Luampa Mission,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,1,0,1,43,0,24hrs,1,100,0,,1,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,Mangango,Kaoma,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,1,2,3,25,0,24hrs,1,100,2,100,3,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,Mwandansengo,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,3,0,3,25,0,24hrs,1,33.3,0,,1,0,33.3
+,Phenotypic,WHO test kit-adults,2022,January,Longe,Kaoma,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,8,0,8,36,0,24hrs,6,75,0,,6,0,75.0
+,Phenotypic,WHO test kit-adults,2022,January,Katunda,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,1,0,1,25,0,24hrs,1,100,0,,1,0,100.0
+,Phenotypic,WHO test kit-adults,2022,January,Mukuye,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,6,23,29,25,0,24hrs,6,100,23,100,29,0,100.0
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,3,2,5,25,0,24hrs,3,100,2,100,5,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Longe,Kaoma,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,5,14,19,25,0,24hrs,2,40,13,92.9,15,0,78.9
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.gambiae s.l,F1,Deltamethrin + PBO,,Pyrethroid,1,15,15,30,25,0,24hrs,15,100,15,100,30,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.gambiae s.l,F1,Deltamethrin + PBO,,Pyrethroid,2,18,15,33,25,0,24hrs,18,100,15,100,33,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.gambiae s.l,F1,Deltamethrin + PBO,,Pyrethroid,3,15,13,28,25,0,24hrs,15,100,13,100,28,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.gambiae s.l,F1,Deltamethrin + PBO,,Pyrethroid,4,11,3,14,25,0,24hrs,11,100,3,100,14,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.gambiae s.l,F1,Deltamethrin + PBO,,Pyrethroid,4,1,0,1,25,0,24hrs,1,100,0,,1,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,3,9,10,25,0,24hrs,1,33.3,3,33.3,4,0,40
+,Phenotypic,WHO test kit-adults,2022,February,Longe,Kaoma,An.gambiae s.l,,Permethrin,0.75,Pyrethroid,1,3,5,8,8,0,24hrs,2,66.7,5,100,7,0,87.5
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.gambiae s.l,F1,Deltamethrin + PBO,,Pyrethroid,1,6,1,7,8,0,24hrs,6,100,1,100,7,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.funestus s.l,F1,Deltamethrin + PBO,,Pyrethroid,1,4,0,4,8,0,24hrs,4,100,0,,4,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,15,10,25,25,0,24hrs,10,66.7,7,70,17,0,68
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,2,15,10,25,25,0,24hrs,8,53.3,6,60,14,0,56
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,3,21,13,34,25,0,24hrs,13,61.9,9,69.2,22,0,64.7
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,0,1,1,25,0,24hrs,0,,1,100,1,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,17,15,32,25,0,24hrs,17,100,15,100,32,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An. gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,2,15,12,27,25,0,24hrs,15,100,12,100,27,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,3,18,10,28,25,0,24hrs,18,100,10,100,28,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,4,14,10,24,25,0,24hrs,14,100,10,100,24,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Zonal,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,11,9,20,25,0,24hrs,11,100,9,100,20,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Namilenge,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,0,1,1,25,0,24hrs,0,,1,100,1,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,30,2,32,25,0,24hrs,30,100,2,100,32,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Zonal,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,4,0,4,25,0,24hrs,4,100,0,,4,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Namilenge,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,1,1,2,25,0,24hrs,1,100,0,0,1,0,50
+,Phenotypic,WHO test kit-adults,2022,February,Longe,Kaoma,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,2,0,2,25,0,24hrs,2,100,0,,2,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katunda,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,1,1,2,25,0,24hrs,1,100,1,100,2,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Zonal,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,4,10,14,25,0,24hrs,4,100,9,90,13,0,92.9
+,Phenotypic,WHO test kit-adults,2022,February,Mulungulungwa,Nkeyema,An. gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,1,0,1,25,0,24hrs,1,100,0,,1,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,23,6,29,25,0,24hrs,23,100,6,100,29,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,2,10,4,14,25,0,24hrs,10,100,4,100,14,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,27,1,28,25,0,24hrs,27,100,1,100,28,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,1,0,1,25,0,24hrs,1,100,0,,1,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,15,10,25,25,0,24hrs,15,100,10,100,25,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,15,2,17,25,0,24hrs,15,100,2,100,17,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,0,3,3,25,0,24hrs,0,,3,100,3,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Longe,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,6,0,6,25,0,24hrs,6,100,0,,6,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Longe,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,2,7,0,7,25,0,24hrs,7,100,0,,7,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mangango,Kaoma,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,4,2,6,25,0,24hrs,4,100,2,100,6,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mangango,Kaoma,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,2,9,9,18,27,0,24hrs,9,100,9,100,18,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Namaloba 51,Kaoma,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,2,0,2,27,0,24hrs,2,100,0,,2,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katunda,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,19,10,29,27,0,24hrs,16,84.2,7,70,23,0,79.3
+,Phenotypic,WHO test kit-adults,2022,February,Katunda,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,1,0,1,27,0,24hrs,1,100,0,,1,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Zonal,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,3,4,7,27,0,24hrs,0,0,4,100,4,0,57.1
+,Phenotypic,WHO test kit-adults,2022,February,Mulungulungwa,Nkeyema,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,0,3,3,27,0,24hrs,0,,3,100,3,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,32,6,38,27,0,24hrs,32,100,6,100,38,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,2,23,11,34,27,0,24hrs,23,100,11,100,34,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Longe,Kaoma,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,1,0,1,6,0,24hrs,1,100,0,,1,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mangango,Kaoma,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,5,3,8,25,0,24hrs,5,100,3,100,8,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katunda,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,1,2,3,25,0,24hrs,0,0,1,50,1,0,33.3
+,Phenotypic,WHO test kit-adults,2022,February,Katunda,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,0,1,1,25,0,24hrs,0,,0,0,0,0,0
+,Phenotypic,WHO test kit-adults,2022,February,Mushwala,Kaoma,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,2,0,2,25,0,24hrs,2,100,0,,2,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,3,4,7,25,0,24hrs,3,100,4,100,7,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.funestus.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,1,0,1,25,0,24hrs,1,100,0,,1,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,17,5,22,25,0,24hrs,17,100,5,100,22,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,1,0,1,25,0,24hrs,1,100,0,,1,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mukuye,Nkeyema,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,4,3,7,25,0,24hrs,4,100,3,100,7,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katunda,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,2,1,3,25,0,24hrs,2,100,1,100,3,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mangango,Kaoma,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,0,1,1,25,0,24hrs,0,,1,100,1,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,26,3,29,25,0,24hrs,26,100,3,100,29,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,1,0,1,25,0,24hrs,1,100,0,,1,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Longe,Kaoma,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,0,1,1,25,0,24hrs,0,,1,100,1,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mwandansengo,Luampa,An.funestus s.l,F1,Permethrin,0.75,Pyrethroid,1,1,1,2,25,0,24hrs,0,0,0,0,0,0,0
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,11,12,23,25,0,24hrs,11,100,12,100,23,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,16,18,34,25,0,24hrs,16,100,18,100,34,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mbanyutu,Luampa,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,4,0,4,25,0,24hrs,4,100,0,,4,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,12,9,21,25,0,24hrs,12,100,9,100,21,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,2,19,12,31,25,0,24hrs,19,100,12,100,31,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mushwala,Kaoma,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,3,2,5,25,0,24hrs,3,100,2,100,5,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mushwala,Kaoma,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,0,1,1,25,0,24hrs,0,,1,100,1,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Mangango,Kaoma,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,1,1,2,25,0,24hrs,1,100,1,100,2,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katunda,Luampa,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,2,2,4,25,0,24hrs,2,100,2,100,4,0,100
+,Phenotypic,WHO test kit-adults,2022,February,Katunda,Luampa,An.funestus,F1,Permethrin,0.75,Pyrethroid,1,0,1,1,25,0,24hrs,0,,1,100,1,0,100
+,Phenotypic,WHO test kit-adults,2022,March,Katunda,Luampa,An.funestus,F1,Permethrin,0.75,Pyrethroid,1,1,0,1,25,0,24hrs,1,100,0,,1,0,100
+,Phenotypic,WHO test kit-adults,2022,March,Mushwala,Kaoma,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,0,1,1,25,0,24hrs,0,,1,100,1,0,100
+,Phenotypic,WHO test kit-adults,2022,March,Mangango,Kaoma,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,2,1,3,25,0,24hrs,2,100,1,100,3,0,100
+,Phenotypic,WHO test kit-adults,2022,March,Namaloba 51,Kaoma,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,1,0,1,25,0,24hrs,1,100,0,,1,0,100
+,Phenotypic,WHO test kit-adults,2022,March,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,13,14,27,25,0,24hrs,13,100,14,100,27,0,100
+,Phenotypic,WHO test kit-adults,2022,March,Katongo,Luampa,An.funestus s.l,F1,Pirimiphos methyl,0.25,Organophosphate,1,2,2,4,25,0,24hrs,2,100,2,100,4,0,100
+,Phenotypic,WHO test kit-adults,2022,March,Katongo,Luampa,An.gambiae s.l,F1,Pirimiphos methyl,0.25,Organophosphate,2,11,11,22,25,0,24hrs,11,100,11,100,22,0,100
+,Phenotypic,WHO test kit-adults,2022,April,Mulamatila,Kaoma,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,1,13,12,25,13,0,24hrs,9,69.2,6,50,15,0,60
+,Phenotypic,WHO test kit-adults,2022,April,Mulamatila,Kaoma,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,2,17,10,27,13,0,24hrs,9,52.9,9,90,18,0,66.7
+,Phenotypic,WHO test kit-adults,2022,April,Mulamatila,Kaoma,An.gambiae s.l,F1,Permethrin,0.75,Pyrethroid,3,17,14,31,13,O,24hrs,14,82.4,9,64.3,23,,74.2
+,Phenotypic,WHO test kit-adults,2022,April,Mulamba,Kaoma,An.gambiae s.l,F1,Pemethrin,0.75,Pyrethroid,1,10,13,23,13,0,24hrs,7,70,10,76.9,17,0,73.9
