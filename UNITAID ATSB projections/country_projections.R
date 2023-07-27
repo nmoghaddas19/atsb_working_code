@@ -198,7 +198,8 @@ bells_whistles <- function(feeding_rate, site, EIR, j) {
                                         parameters = params_bells_whistles)
   return(atsb_bells_whistles)
 }
-
+saveRDS(object = country_results, 
+        file = "~/Documents/GitHub/atsb_working_code/UNITAID ATSB projections/uganda_IRS.RDS")
 prev_at_baseline <- function(x) {
   baseline_timestep <- 19 * 365 + 182
   prev <- x[, "n_detect_730_3649"][baseline_timestep] / x[, "n_730_3649"][baseline_timestep]
