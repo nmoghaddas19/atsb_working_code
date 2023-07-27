@@ -16,19 +16,6 @@ uganda_districts <- data.frame(
               "Pallisa", "Pallisa", "Soroti", "Lira", "Kaberamaido", 
               "Kaberamaido", "Lira", "Lira", "Lira", "Lira"))
 
-ghana_districts <- data.frame(
-  district = c("Builsa North", "Builsa South", "Kasina Nankana West", "Daffiama Bussie",
-               "Nadowli", "Jirapa", "Lawra", "Lambussie Karni.", "Nandom.", 
-               "Sissala East.", "Sissala West", "Wa East", "Wa Municipal", 
-               "Wa West", "Obuasi West", "Obuasi East", "West Mamprusi Districts", 
-               "Gushegeu", "Karaga.", "Kumbungu.", "Mamprugu Moagduri.", "Bunkpurugu", 
-               "Yunyoo", "Tatale", "East Mamprusi.", "Chereponi"),
-  admin_1 = c("Upper East", "Upper East", "Upper East", "Upper West", "Upper West",
-              "Upper West", "Upper West", "Upper West", "Upper West", "Upper West",
-              "Upper West", "Upper West", "Upper West", "Upper West", "Ashanti",
-              "Ashanti", "Northern", "Northern", "Northern", "Northern", "Northern",
-              "Northern", "Northern", "Northern", "Northern", "Northern"))
-
 foo <- matches(unique(uganda_districts$admin_1), UGA$sites$name_1, all.y = FALSE)
 foo <- foo[order(foo$x),]
 
@@ -57,7 +44,7 @@ run_country_irs <- function(country_site_files) {
     params$spraying_timesteps[24:26] <- c(params$spraying_timesteps[23] + 365,
                                           params$spraying_timesteps[23] + 365*2,
                                           params$spraying_timesteps[23] + 365*3)
-    params$spraying_coverages[24:26] <- 0.6
+    params$spraying_coverages[24:26] <- 0.7
     params$spraying_ls_theta <- rbind(params$spraying_ls_theta, params$spraying_ls_theta[23,],
                                        params$spraying_ls_theta[23,], params$spraying_ls_theta[23,])
     params$spraying_ls_gamma <- rbind(params$spraying_ls_gamma, params$spraying_ls_gamma[23,],
@@ -70,7 +57,7 @@ run_country_irs <- function(country_site_files) {
                                        params$spraying_ms_theta[23,], params$spraying_ms_theta[23,])
     params$spraying_ms_gamma <- rbind(params$spraying_ms_gamma, params$spraying_ms_gamma[23,],
                                        params$spraying_ms_gamma[23,], params$spraying_ms_gamma[23,])
-    params$spraying_coverages[17:23] <- 0.6
+    params$spraying_coverages[17:23] <- 0.7
     
     
     EIR <- calibrate(
