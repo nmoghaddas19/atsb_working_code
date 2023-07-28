@@ -35,6 +35,7 @@ run_country_irs <- function(country_site_files) {
   country_name <- country_site_files$country
   country_results <- list()
   for (j in 1:length(foo$y)) {
+    message(j/length(foo$y))
     site <- single_site(GHA, foo$y[j])
     site$interventions$rtss_cov[1:23] <- 0
     params <- site_parameters(

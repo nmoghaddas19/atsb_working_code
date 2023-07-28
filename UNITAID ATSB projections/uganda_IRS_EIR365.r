@@ -160,3 +160,6 @@ bells_whistles <- function(feeding_rate, site, EIR, j) {
                                         parameters = params_bells_whistles)
   return(atsb_bells_whistles)
 }
+
+saveRDS(object = country_results_eir365, 
+        file = "~/Documents/GitHub/atsb_working_code/UNITAID ATSB projections/uganda_IRS_EIR365.RDS")

@@ -1,15 +1,36 @@
+
+library(foresite)
+library(site)
+library(malariasimulation)
+library(grr)
+library(cali)
 drat:::add("mrc-ide")
-install.packages("didehpc")
+# install.packages("didehpc")
 library(didehpc)
 
 setwd("Q:/")
-options(didehpc.cluster = "fi--didemrchnb")
+options(didehpc.cluster = "fi--didemrchnb",
+        didehpc.home = "Q:")
 didehpc::didehpc_config()
-ctx <- context::context_save("contexts", packages = NULL, sources = NULL)
+
+packages <- c("foresite", "site", "malariasimulation", "grr", "cali")
+sources <- "sources.R"
+src <- conan::conan_sources(c("nmoghaddas19/malariasimulation",
+                              "mrc-ide/cali",
+                              "mrc-ide/site"))
+ctx <- context::context_save("contexts", packages = packages, sources = sources, 
+                             package_sources = src)
+
 obj <- didehpc::queue_didehpc(ctx)
 
 t <- obj$enqueue(
-  3+4
+  x <- 3
+  y <- 4
+  splodge <- function(x, y) {
+    z <- x*y + x + y
+    return(z)
+  }
+  splodge(x, y)
 )
 t$wait(120)
 t$result()
@@ -39,13 +60,12 @@ obj <- didehpc::queue_didehpc(ctx)
 
 
 
-
 # load packages local
 pacman::p_load(tidyverse, didehpc, rio, cali, malariasimulation,
                malariaEquilibrium)
 
 # Cluster setup
-options(didehpc.username = "ddee",
+options(didehpc.username = "nmoghad1",
         didehpc.home = "X:")
 
 getwd()
