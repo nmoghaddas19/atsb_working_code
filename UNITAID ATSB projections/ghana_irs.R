@@ -1,7 +1,6 @@
 library(foresite)
 library(site)
 library(malariasimulation)
-library(dplyr)
 library(grr)
 library(cali)
 
@@ -121,10 +120,10 @@ atsb_stopirs <- function(feeding_rate, site, EIR, j) {
   )
   params_atsb_noirs <- set_atsb(
     parameters = params_atsb_noirs,
-    timesteps = (params_atsb_noirs$spraying_timesteps[23] + 365):(params_atsb_noirs$spraying_timesteps[23] + 2*365), 
-    coverages = rep(1,366)
+    timesteps = (params_atsb_noirs$spraying_timesteps[23] + 365):(params_atsb_noirs$spraying_timesteps[23] + 4*365), 
+    coverages = rep(1,1096)
   )
-  res <- 71
+  res <- round(site$interventions$pyrethroid_resistance[23], 2)
   params_atsb_noirs$bednet_timesteps[24] <- params_atsb_noirs$bednet_timesteps[23] + 365
   params_atsb_noirs$bednet_coverages[24] <- max(params_atsb_noirs$bednet_coverages[21:23])
   params_atsb_noirs$bednet_dn0 <- rbind(params_atsb_noirs$bednet_dn0, rep(pyr_nets$dn0_med[res],3))
@@ -155,11 +154,11 @@ bells_whistles <- function(feeding_rate, site, EIR, j) {
   )
   params_bells_whistles <- set_atsb(
     parameters = params_bells_whistles,
-    timesteps = (params_bells_whistles$spraying_timesteps[23] + 365):(params_bells_whistles$spraying_timesteps[23] + 2*365), 
+    timesteps = (params_bells_whistles$spraying_timesteps[23] + 365):(params_bells_whistles$spraying_timesteps[23] + 4*365), 
     coverages = rep(1,366)
   )
   
-  res <- 71
+  res <- round(site$interventions$pyrethroid_resistance[23], 2)
   params_bells_whistles$bednet_timesteps[24] <- params_bells_whistles$bednet_timesteps[23] + 365
   params_bells_whistles$bednet_coverages[24] <- max(params_bells_whistles$bednet_coverages[21:23])
   params_bells_whistles$bednet_dn0 <- rbind(params_bells_whistles$bednet_dn0, rep(ig2_nets$dn0_med[res],3))

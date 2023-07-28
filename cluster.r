@@ -13,25 +13,21 @@ options(didehpc.cluster = "fi--didemrchnb",
         didehpc.home = "Q:")
 didehpc::didehpc_config()
 
-packages <- c("foresite", "site", "malariasimulation", "grr", "cali")
+packages <- c("cali")
 sources <- "sources.R"
-src <- conan::conan_sources(c("nmoghaddas19/malariasimulation",
-                              "mrc-ide/cali",
-                              "mrc-ide/site"))
+src <- conan::conan_sources(c("mrc-ide/cali"))
 ctx <- context::context_save("contexts", packages = packages, sources = sources, 
                              package_sources = src)
 
-obj <- didehpc::queue_didehpc(ctx)
+obs <- didehpc::queue_didehpc(ctx)
 
 t <- obj$enqueue(
-  x <- 3
-  y <- 4
-  splodge <- function(x, y) {
-    z <- x*y + x + y
-    return(z)
-  }
-  splodge(x, y)
+  run_simulation(1000)
 )
+s <- obj$enqueue(
+  3+4
+)
+
 t$wait(120)
 t$result()
 
@@ -98,3 +94,4 @@ src <- conan::conan_sources("mrc-ide/mvw") # using the malariaverse workshop sit
 
 ctx <- context::context_save(path = "new_contexts", packages = packages, sources = sources, package_sources = src)
 obj = didehpc::queue_didehpc(ctx, config = config)
+

@@ -12,7 +12,7 @@ for (i in 1:length(country_results)) {
     col = "darkorchid4",
     xlab = "Year",
     ylab = "Prevalence",
-    xlim = c(2000, 2025),
+    xlim = c(2022, 2025),
     ylim = c(0, 1)
   )
   grid()

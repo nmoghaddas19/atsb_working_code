@@ -1,7 +1,6 @@
 library(foresite)
 library(site)
 library(malariasimulation)
-library(dplyr)
 library(grr)
 library(cali)
 
@@ -16,14 +15,14 @@ uganda_districts <- data.frame(
               "Pallisa", "Pallisa", "Soroti", "Lira", "Kaberamaido", 
               "Kaberamaido", "Lira", "Lira", "Lira", "Lira"))
 
-foo <- matches(unique(uganda_districts$admin_1), UGA$sites$name_1, all.y = FALSE)
+foo <- grr::matches(unique(uganda_districts$admin_1), UGA$sites$name_1, all.y = FALSE)
 foo <- foo[order(foo$x),]
-
-data <- list()
-for (i in 1:length(countries)) {
-  country_site_files <- countries[[names(countries)[i]]]
-  data[[names(countries)[i]]] <- run_country(country_site_files)
-}
+# 
+# data <- list()
+# for (i in 1:length(countries)) {
+#   country_site_files <- countries[[names(countries)[i]]]
+#   data[[names(countries)[i]]] <- run_country(country_site_files)
+# }
 country_results <- run_country_irs(UGA)
 
 run_country_irs <- function(country_site_files) {
@@ -44,7 +43,7 @@ run_country_irs <- function(country_site_files) {
     params$spraying_timesteps[24:26] <- c(params$spraying_timesteps[23] + 365,
                                           params$spraying_timesteps[23] + 365*2,
                                           params$spraying_timesteps[23] + 365*3)
-    params$spraying_coverages[24:26] <- 0.7
+    params$spraying_coverages[24:26] <- 0.6
     params$spraying_ls_theta <- rbind(params$spraying_ls_theta, params$spraying_ls_theta[23,],
                                        params$spraying_ls_theta[23,], params$spraying_ls_theta[23,])
     params$spraying_ls_gamma <- rbind(params$spraying_ls_gamma, params$spraying_ls_gamma[23,],
@@ -57,7 +56,7 @@ run_country_irs <- function(country_site_files) {
                                        params$spraying_ms_theta[23,], params$spraying_ms_theta[23,])
     params$spraying_ms_gamma <- rbind(params$spraying_ms_gamma, params$spraying_ms_gamma[23,],
                                        params$spraying_ms_gamma[23,], params$spraying_ms_gamma[23,])
-    params$spraying_coverages[17:23] <- 0.7
+    params$spraying_coverages[17:23] <- 0.6
     
     
     EIR <- calibrate(
@@ -113,11 +112,11 @@ atsb_stopirs <- function(feeding_rate, site, EIR, j) {
   )
   params_atsb_noirs <- set_atsb(
     parameters = params_atsb_noirs,
-    timesteps = (params_atsb_noirs$spraying_timesteps[23] + 365):(params_atsb_noirs$spraying_timesteps[23] + 2*365), 
-    coverages = rep(1,366)
+    timesteps = (params_atsb_noirs$spraying_timesteps[23] + 365):(params_atsb_noirs$spraying_timesteps[23] + 4*365), 
+    coverages = rep(1,1096)
   )
   res <- 71
-  params_atsb_noirs$bednet_timesteps[24] <- params_atsb_noirs$bednet_timesteps[23] + 365
+  params_atsb_noirs$bednet_timesteps[24] <- params_atsb_noirs$spraying_timesteps[23] + 365
   params_atsb_noirs$bednet_coverages[24] <- max(params_atsb_noirs$bednet_coverages[21:23])
   params_atsb_noirs$bednet_dn0 <- rbind(params_atsb_noirs$bednet_dn0, rep(pyr_nets$dn0_med[res],3))
   params_atsb_noirs$bednet_rn <- rbind(params_atsb_noirs$bednet_rn, rep(pyr_nets$rn0_med[res],3))
@@ -147,12 +146,12 @@ bells_whistles <- function(feeding_rate, site, EIR, j) {
   )
   params_bells_whistles <- set_atsb(
     parameters = params_bells_whistles,
-    timesteps = (params_bells_whistles$spraying_timesteps[23] + 365):(params_bells_whistles$spraying_timesteps[23] + 2*365), 
-    coverages = rep(1,366)
+    timesteps = (params_bells_whistles$spraying_timesteps[23] + 365):(params_bells_whistles$spraying_timesteps[23] + 4*365), 
+    coverages = rep(1,1096)
   )
   
   res <- 71
-  params_bells_whistles$bednet_timesteps[24] <- params_bells_whistles$bednet_timesteps[23] + 365
+  params_bells_whistles$bednet_timesteps[24] <- params_bells_whistles$spraying_timesteps[23] + 365
   params_bells_whistles$bednet_coverages[24] <- max(params_bells_whistles$bednet_coverages[21:23])
   params_bells_whistles$bednet_dn0 <- rbind(params_bells_whistles$bednet_dn0, rep(ig2_nets$dn0_med[res],3))
   params_bells_whistles$bednet_rn <- rbind(params_bells_whistles$bednet_rn, rep(ig2_nets$rn0_med[res],3))
